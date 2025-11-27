@@ -78,25 +78,3 @@ export const MOCK_SESSION_HISTORY: TherapySession[] = [
     ]
   }
 ];
-
-export const MOCK_WORKOUT_HISTORY: WorkoutSession[] = [
-  {
-    id: 'w1',
-    name: 'Full Body Strength',
-    date: new Date(Date.now() - 86400000 * 2).toISOString(),
-    duration: 55,
-    exercises: [
-      { id: 'we1', exerciseId: 'ex2', sets: [{ id: 's1', reps: 8, weight: 100 }, { id: 's2', reps: 8, weight: 100 }] },
-      { id: 'we2', exerciseId: 'ex1', sets: [{ id: 's3', reps: 10, weight: 60 }, { id: 's4', reps: 9, weight: 60 }] },
-    ]
-  },
-  {
-    id: 'w2',
-    name: 'Cardio Day',
-    date: new Date(Date.now() - 86400000 * 4).toISOString(),
-    duration: 30,
-    exercises: [
-      { id: 'we3', exerciseId: 'ex9', sets: [{ id: 's5', reps: 1, weight: 30 }] }, // Using weight as duration for cardio
-    ]
-  }
-];
