@@ -79,18 +79,6 @@ export const MOCK_SESSION_HISTORY: TherapySession[] = [
   }
 ];
 
-export const MOCK_EXERCISE_LIBRARY: Exercise[] = [
-  { id: 'ex1', name: 'Bench Press', muscleGroup: 'Chest' },
-  { id: 'ex2', name: 'Squat', muscleGroup: 'Legs' },
-  { id: 'ex3', name: 'Deadlift', muscleGroup: 'Back' },
-  { id: 'ex4', name: 'Overhead Press', muscleGroup: 'Shoulders' },
-  { id: 'ex5', name: 'Barbell Row', muscleGroup: 'Back' },
-  { id: 'ex6', name: 'Bicep Curl', muscleGroup: 'Biceps' },
-  { id: 'ex7', name: 'Tricep Extension', muscleGroup: 'Triceps' },
-  { id: 'ex8', name: 'Plank', muscleGroup: 'Core' },
-  { id: 'ex9', name: 'Running', muscleGroup: 'Cardio' },
-];
-
 export const MOCK_WORKOUT_HISTORY: WorkoutSession[] = [
   {
     id: 'w1',
