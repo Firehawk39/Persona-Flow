@@ -1,15 +1,18 @@
-import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { NextRequest, NextResponse } from "next/server";
+import { supabase } from "@/lib/supabase";
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(
+  request: NextRequest,
+  context: { params: { id: string } }
+) {
   try {
-    const { id } = params;
+    const { id } = context.params;
 
     const { data: messages, error } = await supabase
-      .from('messages')
-      .select('*')
-      .eq('session_id', id)
-      .order('created_at', { ascending: true });
+      .from("messages")
+      .select("*")
+      .eq("session_id", id)
+      .order("created_at", { ascending: true });
 
     if (error) throw error;
 
