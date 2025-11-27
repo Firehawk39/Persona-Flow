@@ -1,7 +1,7 @@
 // Constants and mock data for PersonaFlow Hybrid
 // Migrated from Google AI Studio version
 
-import { AppTab, Habit, JournalEntry, UserSettings, TherapySession, Exercise, WorkoutSession } from './types';
+import { AppTab, Habit, JournalEntry, UserSettings, TherapySession, WorkoutSession } from './types';
 
 export const INITIAL_SETTINGS: UserSettings = {
   userName: 'Traveler',
