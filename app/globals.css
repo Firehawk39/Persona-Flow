@@ -1,0 +1,38 @@
+/* Cleared to avoid conflicts with original CSS */
+
+/* Therapy Page Custom Styles */
+.therapy-option-card-title {
+  color: #f97316 !important;
+}
+
+.therapy-option-card-desc {
+  color: #000000 !important;
+}
+
+.end-session-btn {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+/* Journal Page Quick Tools */
+.journal-quick-tool-title {
+  color: #f97316 !important;
+}
+
+.journal-quick-tool-desc {
+  color: #000000 !important;
+}
+
+/* Habits Page Category Filters */
+.habit-category-filter {
+  color: #000000 !important;
+}
+
+.habit-category-filter.active {
+  color: #f97316 !important;
+}
+
+/* Habits Page Action Buttons */
+.habit-action-btn {
+  color: #000000 !important;
+}
