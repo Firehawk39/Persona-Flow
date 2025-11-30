@@ -1,0 +1,834 @@
+/* ============================================
+   THERAPY PAGE - PREMIUM DESIGN
+   ============================================ */
+
+/* CSS Variables - Premium Color Palette */
+:root {
+    --primary-green: #74a84a;
+    --primary-dark: #2c541d;
+    --accent-orange: #ff8c00;
+    --accent-orange-light: #fff3e0;
+    --text-dark: #2d3436;
+    --text-light: #636e72;
+    --bg-light: #fdfdfd;
+    --white: #ffffff;
+    --shadow-soft: 0 10px 30px rgba(0,0,0,0.08);
+    --shadow-hover: 0 15px 40px rgba(0,0,0,0.12);
+    --shadow-card: 0 4px 20px rgba(0,0,0,0.06);
+    --radius-lg: 20px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Body Background */
+body.page-therapy {
+    background-image: url('../images/golden-field-v2.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* ============================================
+   HEADER STYLING
+   ============================================ */
+
+.site-header {
+    background: transparent !important;
+    position: relative;
+    z-index: 999;
+    border-bottom: none !important;
+    box-shadow: none !important;
+    padding: 15px 0;
+}
+
+.ast-main-header-wrap,
+.ast-primary-header-bar {
+    background: transparent !important;
+    border-bottom: none !important;
+}
+
+.site-primary-header-wrap.ast-container {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.site-header .site-logo-img img {
+    position: relative;
+    z-index: 1000;
+}
+
+.site-header .menu-link {
+    position: relative;
+    z-index: 1000;
+    color: var(--text-dark) !important;
+    font-family: 'Jost', sans-serif;
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 8px 16px;
+    transition: var(--transition-smooth);
+}
+
+.site-header .menu-link:hover {
+    color: var(--accent-orange) !important;
+}
+
+.site-header .current-menu-item .menu-link {
+    color: var(--accent-orange) !important;
+    font-weight: 600;
+}
+
+.site-header .ast-icon.icon-arrow-down {
+    display: none !important;
+}
+
+/* ============================================
+   HERO SECTION - PREMIUM DESIGN
+   ============================================ */
+
+.therapy-hero {
+    background: transparent;
+    padding: 80px 20px 60px;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.hero-content {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.hero-greeting {
+    font-family: 'Jost', sans-serif;
+    font-size: 1.1rem;
+    color: var(--accent-orange);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 15px;
+}
+
+.hero-title {
+    font-family: 'Jost', sans-serif;
+    font-size: 3.5rem;
+    color: var(--text-dark);
+    margin-bottom: 20px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.hero-quote {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.25rem;
+    color: var(--text-light);
+    font-style: italic;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* ============================================
+   MAIN LAYOUT
+   ============================================ */
+
+.therapy-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 40px;
+    align-items: start;
+}
+
+/* ============================================
+   CARDS - PREMIUM STYLING
+   ============================================ */
+
+.therapy-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 30px;
+    box-shadow: var(--shadow-card);
+    margin-bottom: 30px;
+    transition: var(--transition-smooth);
+    border: 1px solid rgba(0,0,0,0.04);
+}
+
+.therapy-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+}
+
+.card-title {
+    font-family: 'Jost', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 25px;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.card-title i {
+    color: var(--accent-orange);
+    font-size: 1.3rem;
+}
+
+/* ============================================
+   MOOD TRACKER - ENHANCED DESIGN
+   ============================================ */
+
+.mood-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+}
+
+.mood-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    backface-visibility: hidden; /* Prevent jitter */
+}
+
+.mood-emoji {
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, #f5f7fa 0%, #f0f2f5 100%);
+    width: 65px;
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-bottom: 12px; /* Increased margin for scale room */
+    transition: var(--transition-smooth);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transform-origin: center center;
+    will-change: transform;
+}
+
+.mood-item:hover {
+    transform: translateY(-5px);
+}
+
+.mood-item:hover .mood-emoji,
+.mood-item.active .mood-emoji {
+    background: linear-gradient(135deg, var(--accent-orange-light) 0%, #ffe4cc 100%);
+    transform: scale(1.1); /* Slightly reduced scale for stability */
+    box-shadow: 0 6px 20px rgba(255, 140, 0, 0.25);
+}
+
+.mood-label {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-light);
+    transition: var(--transition-smooth);
+    text-align: center;
+}
+
+.mood-item:hover .mood-label,
+.mood-item.active .mood-label {
+    color: var(--accent-orange);
+    font-weight: 600;
+}
+
+/* ============================================
+   QUICK ACTIONS - PREMIUM CARDS
+   ============================================ */
+
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.action-btn {
+    background: var(--white);
+    border: 1px solid rgba(0,0,0,0.06);
+    padding: 25px 15px;
+    border-radius: var(--radius-md);
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.action-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, var(--accent-orange-light) 0%, #fff 100%);
+    opacity: 0;
+    transition: var(--transition-smooth);
+    z-index: 0;
+}
+
+.action-btn:hover::before {
+    opacity: 1;
+}
+
+.action-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    border-color: rgba(255, 140, 0, 0.3);
+}
+
+.action-icon {
+    font-size: 2.2rem;
+    margin-bottom: 15px;
+    display: inline-block;
+    position: relative;
+    z-index: 1;
+    transition: var(--transition-smooth);
+    filter: drop-shadow(0 4px 4px rgba(0,0,0,0.05));
+}
+
+.action-btn:hover .action-icon {
+    transform: scale(1.15) rotate(3deg);
+}
+
+.action-text {
+    font-family: 'Jost', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    position: relative;
+    z-index: 1;
+    transition: var(--transition-smooth);
+}
+
+.action-btn:hover .action-text {
+    color: var(--accent-orange);
+}
+
+/* ============================================
+   INSIGHTS - VISUAL STATS
+   ============================================ */
+
+.insights-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.stat-item {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: var(--transition-smooth);
+    border: 1px solid transparent;
+}
+
+.stat-item.full-width {
+    grid-column: span 2;
+    flex-direction: row;
+    justify-content: center;
+    gap: 15px;
+}
+
+.stat-item:hover {
+    background: var(--white);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border-color: rgba(0,0,0,0.05);
+    transform: translateY(-2px);
+}
+
+.stat-icon {
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--white);
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.stat-item.full-width .stat-icon {
+    margin-bottom: 0;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-item.full-width .stat-info {
+    align-items: flex-start;
+    text-align: left;
+}
+
+.stat-value {
+    font-family: 'Jost', sans-serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--text-dark);
+    line-height: 1.2;
+}
+
+.stat-label {
+    font-family: 'Jost', sans-serif;
+    color: var(--text-light);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ============================================
+   TABBED INTERFACE - MODERN DESIGN
+   ============================================ */
+
+.tab-container {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+    min-height: 650px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(0,0,0,0.04);
+}
+
+.tabs-header {
+    display: flex;
+    background: linear-gradient(to bottom, #f8f9fa 0%, #f0f2f5 100%);
+    padding: 8px;
+    gap: 8px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 14px 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-family: 'Jost', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-light);
+    transition: var(--transition-smooth);
+    border-radius: var(--radius-sm);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.tab-btn i {
+    font-size: 1.1rem;
+    transition: var(--transition-smooth);
+}
+
+.tab-btn::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 3px;
+    background: var(--accent-orange);
+    transition: var(--transition-smooth);
+}
+
+.tab-btn:hover {
+    color: var(--primary-dark);
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.tab-btn:hover i {
+    transform: translateY(-2px);
+}
+
+.tab-btn.active {
+    background: var(--white);
+    color: var(--primary-dark);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.tab-btn.active i {
+    color: var(--accent-orange);
+}
+
+.tab-btn.active::after {
+    width: 40px;
+}
+
+.tab-content {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+.tab-pane {
+    display: none;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+/* ============================================
+   CHAT INTERFACE - PREMIUM MESSAGING
+   ============================================ */
+
+.chat-messages {
+    height: 480px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
+    border-radius: var(--radius-md);
+    border: 1px solid #e9ecef;
+}
+
+.message {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+    animation: slideIn 0.3s ease-out;
+}
+
+.message.user {
+    flex-direction: row-reverse;
+}
+
+.message-bubble {
+    max-width: 75%;
+    padding: 14px 18px;
+    border-radius: 18px;
+    line-height: 1.6;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.message.ai .message-bubble {
+    background: linear-gradient(135deg, var(--primary-green) 0%, #68984a 100%);
+    color: white;
+    border-bottom-left-radius: 4px;
+}
+
+.message.user .message-bubble {
+    background: linear-gradient(135deg, #ffffff 0%, #f0f2f5 100%);
+    color: var(--text-dark);
+    border: 1px solid #e9ecef;
+    border-bottom-right-radius: 4px;
+}
+
+.chat-input-group {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.chat-input {
+    flex: 1;
+    padding: 14px 18px;
+    border: 2px solid #e9ecef;
+    border-radius: 25px;
+    outline: none;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.95rem;
+    transition: var(--transition-smooth);
+}
+
+.chat-input:focus {
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 3px rgba(116, 168, 74, 0.1);
+}
+
+.chat-send-btn {
+    padding: 14px 28px;
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-dark) 100%);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-family: 'Jost', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: var(--transition-smooth);
+    box-shadow: 0 4px 12px rgba(116, 168, 74, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.chat-send-btn i {
+    font-size: 1rem;
+}
+
+.chat-send-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(116, 168, 74, 0.4);
+}
+
+.chat-send-btn:active {
+    transform: translateY(0);
+}
+
+/* ============================================
+   JOURNAL ENTRIES - ELEGANT CARDS
+   ============================================ */
+
+.journal-entries {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.journal-entry {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    padding: 20px;
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--accent-orange);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    transition: var(--transition-smooth);
+}
+
+.journal-entry:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.entry-date {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--accent-orange);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.entry-text {
+    font-family: 'Roboto', sans-serif;
+    color: var(--text-dark);
+    line-height: 1.7;
+    font-size: 0.95rem;
+}
+
+.new-entry-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-dark) 100%);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-family: 'Jost', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-top: 15px;
+    transition: var(--transition-smooth);
+    box-shadow: 0 4px 12px rgba(116, 168, 74, 0.3);
+}
+
+.new-entry-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(116, 168, 74, 0.4);
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 900px) {
+    .therapy-container {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .hero-title {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .hero-greeting {
+        font-size: 0.95rem;
+    }
+    
+    .hero-quote {
+        font-size: 1.1rem;
+    }
+    
+    .therapy-container {
+        padding: 0 15px 50px;
+    }
+    
+    .therapy-card {
+        padding: 25px 20px;
+    }
+    
+    .quick-actions-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .mood-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+    }
+    
+    .tab-container {
+        min-height: 500px;
+    }
+    
+    .tabs-header {
+        flex-wrap: wrap;
+    }
+    
+    .tab-btn {
+        font-size: 0.85rem;
+        padding: 12px 16px;
+    }
+}
+
+@media (max-width: 544px) {
+    .hero-title {
+        font-size: 1.75rem;
+    }
+    
+    .mood-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .mood-emoji {
+        width: 55px;
+        height: 55px;
+        font-size: 2rem;
+    }
+}
+
+/* ============================================
+   GLOBAL POLISH
+   ============================================ */
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
+}
+
+/* Chat Messages Scrollbar */
+.chat-messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Text Selection */
+::selection {
+    background: rgba(255, 140, 0, 0.3);
+    color: var(--text-dark);
+}
+
+/* Focus States */
+:focus-visible {
+    outline: 2px solid var(--primary-green);
+    outline-offset: 2px;
+}
+
+/* Smooth Scrolling */
+html {
+    scroll-behavior: smooth;
+}

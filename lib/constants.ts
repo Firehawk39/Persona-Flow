@@ -1,7 +1,7 @@
 // Constants and mock data for PersonaFlow Hybrid
 // Migrated from Google AI Studio version
 
-import { AppTab, Habit, JournalEntry, UserSettings, TherapySession, Exercise, WorkoutSession } from './types';
+import { AppTab, Habit, JournalEntry, UserSettings, TherapySession } from './types';
 
 export const INITIAL_SETTINGS: UserSettings = {
   userName: 'Traveler',
@@ -14,7 +14,6 @@ export const NAV_ITEMS: { label: string; tab: AppTab | null }[] = [
   { tab: AppTab.THERAPY, label: 'THERAPY' },
   { tab: AppTab.JOURNAL, label: 'JOURNAL' },
   { tab: AppTab.HABITS, label: 'HABITS' },
-  { tab: AppTab.FITNESS, label: 'FITNESS' },
   { tab: AppTab.CHAT, label: 'FLOW AI' },
 ];
 
@@ -75,40 +74,6 @@ export const MOCK_SESSION_HISTORY: TherapySession[] = [
     transcript: [
       { id: '2a', role: 'assistant', content: "Let's talk about what's on your mind.", timestamp: 4 },
       { id: '2b', role: 'user', content: "I've just been feeling really lonely lately.", timestamp: 5 },
-    ]
-  }
-];
-
-export const MOCK_EXERCISE_LIBRARY: Exercise[] = [
-  { id: 'ex1', name: 'Bench Press', muscleGroup: 'Chest' },
-  { id: 'ex2', name: 'Squat', muscleGroup: 'Legs' },
-  { id: 'ex3', name: 'Deadlift', muscleGroup: 'Back' },
-  { id: 'ex4', name: 'Overhead Press', muscleGroup: 'Shoulders' },
-  { id: 'ex5', name: 'Barbell Row', muscleGroup: 'Back' },
-  { id: 'ex6', name: 'Bicep Curl', muscleGroup: 'Biceps' },
-  { id: 'ex7', name: 'Tricep Extension', muscleGroup: 'Triceps' },
-  { id: 'ex8', name: 'Plank', muscleGroup: 'Core' },
-  { id: 'ex9', name: 'Running', muscleGroup: 'Cardio' },
-];
-
-export const MOCK_WORKOUT_HISTORY: WorkoutSession[] = [
-  {
-    id: 'w1',
-    name: 'Full Body Strength',
-    date: new Date(Date.now() - 86400000 * 2).toISOString(),
-    duration: 55,
-    exercises: [
-      { id: 'we1', exerciseId: 'ex2', sets: [{ id: 's1', reps: 8, weight: 100 }, { id: 's2', reps: 8, weight: 100 }] },
-      { id: 'we2', exerciseId: 'ex1', sets: [{ id: 's3', reps: 10, weight: 60 }, { id: 's4', reps: 9, weight: 60 }] },
-    ]
-  },
-  {
-    id: 'w2',
-    name: 'Cardio Day',
-    date: new Date(Date.now() - 86400000 * 4).toISOString(),
-    duration: 30,
-    exercises: [
-      { id: 'we3', exerciseId: 'ex9', sets: [{ id: 's5', reps: 1, weight: 30 }] }, // Using weight as duration for cardio
     ]
   }
 ];

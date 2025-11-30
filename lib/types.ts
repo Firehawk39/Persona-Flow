@@ -9,7 +9,6 @@ export enum AppTab {
 
   CHAT = "CHAT",
   SETTINGS = "SETTINGS",
-  FITNESS = "FITNESS",
 }
 
 export enum ChatSource {
