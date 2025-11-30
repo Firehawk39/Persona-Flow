@@ -21,7 +21,7 @@ export default function RootLayout({
         <link rel="profile" href="https://gmpg.org/xfn/11" />
         <style>{`img:is([sizes="auto" i], [sizes^="auto," i]) { contain-intrinsic-size: 3000px 1500px }`}</style>
         
-        {/* Original CSS Links */}
+        {/* Theme Styles */}
         <link rel="stylesheet" id="astra-theme-css-css" href="/assets/legacy/main.min.css" media="all" />
         <link rel="stylesheet" id="astra-google-fonts-css" href="/assets/legacy/astra-fonts.css" media="all" />
         <link rel="stylesheet" id="global-font-css" href="/assets/css/global-font.css" media="all" />
@@ -41,17 +41,17 @@ export default function RootLayout({
         <link rel="stylesheet" id="e-animation-fadeIn-css" href="/assets/legacy/fadeIn.min.css" media="all" />
         <link rel="stylesheet" id="widget-image-css" href="/assets/legacy/widget-image.min.css" media="all" />
         
-        {/* Sidebar CSS */}
+        {/* UI Components */}
         <link rel="stylesheet" id="zip-ai-sidebar-css" href="/assets/legacy/sidebar-app.css" media="all" />
         <link rel="stylesheet" id="zip-ai-sidebar-fonts-css" href="/assets/legacy/sidebar-fonts.css" media="all" />
         
-        {/* More Icons */}
+        {/* Icon Libraries */}
         <link rel="stylesheet" id="hfe-elementor-icons-css" href="/assets/legacy/elementor-icons-1.min.css" media="all" />
         <link rel="stylesheet" id="hfe-icons-list-css" href="/assets/legacy/widget-icon-list.min.css" media="all" />
         <link rel="stylesheet" id="hfe-social-icons-css" href="/assets/legacy/widget-social-icons.min.css" media="all" />
         <link rel="stylesheet" id="hfe-social-share-icons-brands-css" href="/assets/legacy/brands.css" media="all" />
         
-        {/* Custom CSS */}
+        {/* PersonaFlow Custom Styles */}
         <link rel="stylesheet" href="/assets/css/therapy.css" />
         <link rel="stylesheet" href="/assets/css/journal.css" />
         <link rel="stylesheet" href="/assets/css/habits.css" />
@@ -60,7 +60,7 @@ export default function RootLayout({
         <link rel="stylesheet" href="/assets/css/card-fixes.css" />
         <link rel="stylesheet" href="/assets/css/brand-colors.css" />
         
-        {/* More Fonts/Icons */}
+        {/* Typography & Additional Icons */}
         <link rel="stylesheet" id="hfe-social-share-icons-fontawesome-css" href="/assets/legacy/fontawesome.css" media="all" />
         <link rel="stylesheet" id="hfe-nav-menu-icons-css" href="/assets/legacy/solid.css" media="all" />
         <link rel="stylesheet" id="elementor-gf-roboto-css" href="/assets/legacy/roboto.css" media="all" />
