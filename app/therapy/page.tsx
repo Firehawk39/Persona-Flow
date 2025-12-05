@@ -753,15 +753,91 @@ export default function Therapy() {
                 </div>
 
                 {/* Session Transcript */}
+                {/* Session Transcript - Converted to Chat Bubbles */}
                 <div style={{
-                  fontSize: '18px',
-                  color: '#4a4a4a',
-                  lineHeight: '1.8',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '24px',
                   marginBottom: '40px',
-                  whiteSpace: 'pre-wrap',
                   padding: '0 20px',
                 }}>
-                  {viewingSession.transcript}
+                  {viewingSession.transcript.split('\n\n').map((line: string, index: number) => {
+                    const isUser = line.startsWith('User:');
+                    const text = line.replace(/^(User:|Therapist:)\s*/, '');
+                    
+                    if (!text) return null;
+
+                    return (
+                      <div
+                        key={index}
+                        style={{
+                          display: 'flex',
+                          justifyContent: isUser ? 'flex-end' : 'flex-start',
+                          alignItems: 'flex-end',
+                          gap: '12px',
+                        }}
+                      >
+                        {!isUser && (
+                          <div style={{
+                            width: '36px',
+                            height: '36px',
+                            borderRadius: '50%',
+                            background: 'rgba(255, 255, 255, 0.8)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '20px',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                            flexShrink: 0,
+                          }}>
+                            🤖
+                          </div>
+                        )}
+                        
+                        <div style={{
+                          maxWidth: '70%',
+                          background: isUser 
+                            ? 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)'
+                            : 'rgba(255, 255, 255, 0.7)',
+                          backdropFilter: 'blur(12px)',
+                          borderRadius: isUser 
+                            ? '20px 20px 4px 20px'
+                            : '20px 20px 20px 4px',
+                          padding: '16px 24px',
+                          color: isUser ? '#ffffff' : '#1a202c',
+                          boxShadow: isUser
+                            ? '0 4px 12px rgba(249, 115, 22, 0.2)'
+                            : '0 2px 8px rgba(0,0,0,0.05)',
+                        }}>
+                          <p style={{
+                            margin: 0,
+                            fontSize: '16px',
+                            lineHeight: '1.6',
+                          }}>
+                            {text}
+                          </p>
+                        </div>
+
+                        {isUser && (
+                          <div style={{
+                            width: '36px',
+                            height: '36px',
+                            borderRadius: '50%',
+                            background: 'linear-gradient(135deg, #4a5568 0%, #2d3748 100%)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '14px',
+                            color: 'white',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                            flexShrink: 0,
+                          }}>
+                            ME
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
 
                 {/* Therapist Response/Insight Card */}
