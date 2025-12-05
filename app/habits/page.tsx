@@ -642,10 +642,11 @@ export default function HabitsPage() {
           gridTemplateColumns: 'repeat(2, 1fr)',
           gap: '20px',
         }}>
-          {filteredHabits.map((habit) => (
+          {filteredHabits.map((habit, index) => (
             <div
               key={habit.id}
               style={{
+                animation: `fadeIn 0.5s ease-out ${index * 0.1}s backwards`,
                 background: 'rgba(255, 255, 255, 0.3)',
                 backdropFilter: 'blur(20px)',
                 borderRadius: '20px',
@@ -1492,6 +1493,13 @@ export default function HabitsPage() {
           </div>
         </div>
       )}
+
+      <style jsx global>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </>
   );
 }
