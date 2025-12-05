@@ -1,267 +1,355 @@
-# 🌟 PersonaFlow - Your Personal Growth Companion
-
 <div align="center">
 
-![PersonaFlow Banner](https://via.placeholder.com/1200x300/667eea/ffffff?text=PersonaFlow+-+Mental+Wellness+Platform)
+# 🌟 PersonaFlow
 
-**A comprehensive mental wellness web application for personal growth, habit tracking, and AI-powered guidance.**
+### _Your AI-Powered Companion for Mental Wellness & Personal Growth_
 
-[![Live Demo](https://img.shields.io/badge/demo-live-success?style=for-the-badge)](https://personaflow-demo.vercel.app)
-[![Next.js](https://img.shields.io/badge/Next.js-16.0-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
-[![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
-
-[Live Demo](https://personaflow-demo.vercel.app) • [Features](#-features) • [Tech Stack](#-tech-stack) • [Getting Started](#-getting-started)
+[![React](https://img.shields.io/badge/React-18-61dafb?style=for-the-badge&logo=react)](https://reactjs.org/)
+[![License](https://img.shields.io/badge/License-Proprietary-red?style=for-the-badge)](LICENSE)
 
 </div>
 
 ---
 
-## 📖 **About**
+## 🎯 Overview
 
-PersonaFlow is a modern web application designed to support personal growth through:
+**PersonaFlow** is a modern, comprehensive web application designed to support your journey toward better mental health and personal development. Built with cutting-edge technologies, it combines intuitive design with powerful AI capabilities to provide personalized therapy sessions, journaling, habit tracking, and intelligent coaching.
 
-- **Habit Tracking** with custom day scheduling
-- **AI-Powered Chat** using local LLMs (Ollama)
-- **Journal Entries** with mood tracking
-- **Therapy Sessions** management
-
-Built as a learning project to demonstrate full-stack development skills with the latest technologies.
+> 💡 _Transform your daily routine into a journey of self-discovery and growth_
 
 ---
 
-## ✨ **Features**
+## ✨ Key Features
+
+<table>
+<tr>
+<td width="50%">
+
+### 🧠 **AI Therapy Sessions**
+
+Interactive therapy sessions powered by AI to provide mental health support and personalized guidance whenever you need it.
+
+</td>
+<td width="50%">
+
+### 📝 **Smart Journaling**
+
+Digital journaling with AI-powered insights, mood tracking, and reflection tools to understand your emotional patterns.
+
+</td>
+</tr>
+<tr>
+<td width="50%">
 
 ### 🎯 **Habit Tracking**
 
-- Create habits with specific day scheduling (e.g., Gym on Mon/Wed/Fri)
-- Track streaks and completion rates
-- Category-based organization (Health, Productivity, Mindfulness)
-- Beautiful visual progress indicators
+Build and maintain positive habits with visual progress tracking, streak counters, and detailed analytics.
 
-### 🤖 **Flow AI Chat**
+</td>
+<td width="50%">
 
-- AI-powered mental wellness companion
-- Powered by n8n + Ollama (local LLMs)
-- Conversation history management
-- Context-aware responses
+### 💬 **AI Coach**
 
-### 📝 **Journal**
+24/7 access to an intelligent AI coach for personalized guidance, support, and motivation on your wellness journey.
 
-- Daily reflection entries
-- Mood tracking with emojis
-- Tag-based organization
-- Read-only detail view
+</td>
+</tr>
+<tr>
+<td width="50%">
 
-### 💭 **Therapy Sessions**
+### ⚙️ **Customizable Settings**
 
-- Session history tracking
-- Mood and quote recording
-- Full transcript storage
-- Click-to-view details
+Personalize your experience with flexible configuration options tailored to your preferences.
 
-### 🎨 **Beautiful UI/UX**
+</td>
+<td width="50%">
 
-- Glassmorphism design
-- Smooth animations and transitions
-- Responsive layout
-- Warm color palette
+### 🔒 **Privacy First**
+
+Your data stays secure with client-side storage and optional cloud backup for peace of mind.
+
+</td>
+</tr>
+</table>
 
 ---
 
-## 🛠️ **Tech Stack**
+## 🛠️ Technology Stack
 
-### **Frontend**
+### 🎨 Frontend
 
-- **Next.js 16** - React framework with App Router
-- **React 19** - Latest React features
-- **TypeScript** - Type-safe development
-- **Tailwind CSS v4** - Utility-first styling
-- **Framer Motion** - Smooth animations
+- 🚀 **Next.js 14** - React framework with App Router
+- 📘 **TypeScript** - Type-safe development
+- ⚛️ **React** - Component-based UI library
+- 🎨 **Tailwind CSS** - Utility-first styling
 
-### **Backend**
+### 🧩 UI Components
 
-- **Supabase** - PostgreSQL database & authentication
-- **Next.js API Routes** - Serverless functions
-- **n8n** - Workflow automation for AI
-- **Ollama** - Local LLM inference
+- 🎭 **Lucide React** - Modern icon library
+- 📊 **Recharts** - Data visualization and analytics
+- 🎨 **FontAwesome** - Additional icon support
 
-### **Additional Libraries**
+### 💾 Data Management
 
-- **Recharts** - Data visualization
-- **Lucide React** - Icon library
-- **JS-Joda** - Date/time handling
-- **Font Awesome** - Additional icons
+- 🔄 **React Context API** - Global state management
+- 💿 **localStorage** - Client-side data persistence
+- ☁️ **Supabase** - Cloud database integration (coming soon)
 
----
+### 🤖 AI Integration
 
-## 🚀 **Getting Started**
-
-### **Prerequisites**
-
-- Node.js 18+ installed
-- npm or yarn package manager
-- (Optional) Supabase account for data persistence
-- (Optional) n8n + Ollama for AI chat
-
-### **Installation**
-
-1. **Clone the repository**
-
-   ```bash
-   git clone https://github.com/your-username/personaflow.git
-   cd personaflow
-   ```
-
-2. **Install dependencies**
-
-   ```bash
-   npm install
-   ```
-
-3. **Set up environment variables**
-
-   Create `.env.local`:
-
-   ```env
-   # Demo Mode (set to false for personal use)
-   NEXT_PUBLIC_DEMO_MODE=true
-
-   # Supabase (optional for demo mode)
-   NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-key
-
-   # n8n Webhook (optional)
-   N8N_WEBHOOK_URL=your-n8n-webhook-url
-   ```
-
-4. **Run development server**
-
-   ```bash
-   npm run dev
-   ```
-
-5. **Open in browser**
-   ```
-   http://localhost:3000
-   ```
+- 🔗 **n8n Webhooks** - AI workflow automation
+- 🧠 **OpenAI API** - Natural language processing
 
 ---
 
-## 📚 **Documentation**
+## 📁 Project Structure
 
-- **[Setup Guide](SETUP_GUIDE.md)** - Complete setup instructions
-- **[Deployment Guide](DEPLOYMENT_GUIDE.md)** - Deploy for demo & personal use
-- **[Feature Audit](FEATURE_AUDIT_REPORT.md)** - Complete feature list
-- **[Database Schema](supabase_schema.sql)** - Supabase table definitions
-- **[n8n Setup](N8N_SETUP_GUIDE.md)** - AI chat configuration
-
----
-
-## 🎭 **Demo vs Personal Mode**
-
-PersonaFlow supports two modes:
-
-### **Demo Mode** (`NEXT_PUBLIC_DEMO_MODE=true`)
-
-- Perfect for portfolio/job applications
-- Uses mock data
-- No database required
-- Changes don't persist
-- Try it: [Live Demo](https://personaflow-demo.vercel.app)
-
-### **Personal Mode** (`NEXT_PUBLIC_DEMO_MODE=false`)
-
-- For actual daily use
-- Requires Supabase setup
-- Data persists
-- Full functionality
-
----
-
-## 📸 **Screenshots**
-
-### Homepage
-
-![Homepage](https://via.placeholder.com/800x500/667eea/ffffff?text=Homepage+Screenshot)
-
-### Habits Tracker
-
-![Habits](https://via.placeholder.com/800x500/667eea/ffffff?text=Habits+Page+Screenshot)
-
-### Flow AI Chat
-
-![Chat](https://via.placeholder.com/800x500/667eea/ffffff?text=AI+Chat+Screenshot)
+```
+PersonaFlow/
+├── 📱 app/                      # Next.js App Router
+│   ├── 🏠 page.tsx             # Landing page
+│   ├── 🧠 therapy/             # Therapy sessions
+│   ├── 📝 journal/             # Journaling interface
+│   ├── 🎯 habits/              # Habit tracker
+│   ├── 💬 chat/                # AI Coach chat
+│   ├── ⚙️ settings/            # User settings
+│   ├── 🔌 api/                 # API routes
+│   └── 📄 layout.tsx           # Root layout
+├── 🧩 components/              # React components
+│   ├── 🧠 therapy/            # Therapy UI components
+│   ├── 📝 journal/            # Journal UI components
+│   ├── 🎯 habits/             # Habit tracker components
+│   ├── 💬 chat/               # Chat interface components
+│   └── 🔧 shared/             # Reusable components
+├── 📚 lib/                    # Core utilities
+│   ├── 📘 types.ts           # TypeScript definitions
+│   ├── 🔢 constants.ts       # Application constants
+│   ├── 🔄 context/           # React Context providers
+│   └── 🛠️ services/          # External service integrations
+├── 🖼️ public/                # Static assets
+│   └── 🎨 assets/           # Images and media
+└── 💅 styles/               # Global styles
+```
 
 ---
 
-## 🗺️ **Roadmap**
+## 🚀 Getting Started
 
-- [x] Core habit tracking
-- [x] Specific day scheduling
-- [x] AI chat integration
-- [x] Journal entries
-- [x] Therapy sessions
-- [ ] User authentication
-- [ ] Mobile app (React Native)
-- [ ] Data export/import
-- [ ] Habit reminders
-- [ ] Advanced analytics
+### 📋 Prerequisites
+
+- 📦 **Node.js** 18.0 or higher
+- 🔧 **npm** or **yarn** package manager
+
+### ⚡ Installation
+
+1️⃣ **Clone and navigate to the project:**
+
+```bash
+cd PersonaFlow
+```
+
+2️⃣ **Install dependencies:**
+
+```bash
+npm install
+```
+
+3️⃣ **Create environment configuration:**
+
+```bash
+cp .env.example .env.local
+```
+
+4️⃣ **Configure environment variables in `.env.local`:**
+
+```env
+NEXT_PUBLIC_N8N_WEBHOOK_URL=your_webhook_url
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_key
+```
+
+### 🎮 Development
+
+**Start the development server:**
+
+```bash
+npm run dev
+```
+
+🌐 Access the application at `http://localhost:3000`
+
+### 🏗️ Production Build
+
+**Build for production:**
+
+```bash
+npm run build
+```
+
+**Start production server:**
+
+```bash
+npm start
+```
 
 ---
 
-## 🤝 **Contributing**
+## 💾 Data Persistence
 
-This is a personal learning project, but feedback and suggestions are welcome!
+PersonaFlow uses a **layered approach** to data storage:
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+### 📱 Current Implementation
 
----
+- 💿 **localStorage** - Client-side storage for immediate persistence
+- 🔑 **Data keys:**
+  - `personaflow_settings` - User preferences
+  - `personaflow_habits` - Habit tracking data
+  - `personaflow_journal` - Journal entries
+  - `personaflow_sessions` - Therapy sessions
 
-## 📝 **License**
+### 🔮 Planned Enhancement
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 👨‍💻 **Author**
-
-**Harsh Solanki**
-
-- Portfolio: [your-portfolio.com](https://your-portfolio.com)
-- LinkedIn: [linkedin.com/in/your-profile](https://linkedin.com/in/your-profile)
-- GitHub: [@your-username](https://github.com/your-username)
-- Email: your.email@example.com
+- ☁️ **Supabase** - Cloud database for cross-device synchronization and backup
 
 ---
 
-## 🙏 **Acknowledgments**
+## 🧪 Development Workflow
 
-- Design inspiration from modern wellness apps
-- Icons from [Lucide](https://lucide.dev/) and [Font Awesome](https://fontawesome.com/)
-- Background images from [Vecteezy](https://www.vecteezy.com/)
-- Built with ❤️ for personal growth
+### ✅ Code Quality
+
+```bash
+# Lint code
+npm run lint
+
+# Type checking
+npm run type-check
+```
+
+### 🧪 Testing
+
+```bash
+# Run tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+```
 
 ---
 
-## 📊 **Project Stats**
+## 🌐 Deployment
 
-- **Lines of Code:** ~10,000+
-- **Components:** 15+
-- **API Routes:** 8
-- **Database Tables:** 5
-- **Development Time:** [Your timeframe]
+### 🚀 Vercel (Recommended)
+
+1️⃣ **Install Vercel CLI:**
+
+```bash
+npm i -g vercel
+```
+
+2️⃣ **Deploy:**
+
+```bash
+vercel
+```
+
+### 🔄 Alternative Platforms
+
+PersonaFlow is compatible with any Next.js hosting platform:
+
+| Platform           | Features               |
+| ------------------ | ---------------------- |
+| 🔷 **Netlify**     | Automated deployments  |
+| 🟠 **AWS Amplify** | Scalable cloud hosting |
+| 🚂 **Railway**     | Simple deployment      |
+| 🎨 **Render**      | Full-stack platform    |
+
+---
+
+## 🗺️ Roadmap
+
+### ✅ Phase 1: Core Features
+
+- [x] 🏗️ Project setup and architecture
+- [x] 🔄 State management implementation
+- [x] 📘 TypeScript type system
+- [x] 🏠 Homepage and navigation
+- [x] 🤖 AI integration framework
+
+### 🚧 Phase 2: Feature Development
+
+- [ ] 🧠 Complete therapy session interface
+- [ ] 📝 Enhanced journaling with AI insights
+- [ ] 📊 Advanced habit tracking analytics
+- [ ] 💬 AI coach conversation improvements
+- [ ] ⚙️ Settings and customization
+
+### 📋 Phase 3: Enhancement
+
+- [ ] ☁️ Supabase database integration
+- [ ] 🔐 User authentication
+- [ ] 🔄 Cross-device synchronization
+- [ ] 📱 Mobile responsive optimization
+- [ ] ⚡ Performance optimization
+- [ ] ♿ Accessibility improvements
+
+### 🔮 Phase 4: Advanced Features
+
+- [ ] 📤 Data export and backup
+- [ ] 📊 Advanced analytics dashboard
+- [ ] 👥 Social features and community
+- [ ] ⌚ Integration with wearable devices
+- [ ] 📱 Mobile application (React Native)
+- [ ] 💎 Premium features and monetization
+
+---
+
+## 🤝 Contributing
+
+While PersonaFlow is a personal project, **contributions are welcome!**
+
+1. 🍴 Fork the repository
+2. 🌿 Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. 💾 Commit your changes (`git commit -m 'Add amazing feature'`)
+4. 📤 Push to the branch (`git push origin feature/amazing-feature`)
+5. 🔀 Open a Pull Request
+
+---
+
+## 📄 License
+
+🔒 This project is **private and proprietary**. All rights reserved.
+
+---
+
+## 💬 Support
+
+Need help? Here's how to get support:
+
+- 📖 Review the documentation
+- 🐛 Check existing issues
+- 📚 Consult the [Next.js documentation](https://nextjs.org/docs)
 
 ---
 
 <div align="center">
 
-**⭐ Star this repo if you find it helpful!**
+### 📊 Project Stats
 
-Made with ❤️ by [Harsh Solanki](https://github.com/your-username)
+**Version:** `1.0.0` | **Status:** 🚧 Active Development | **Last Updated:** November 2025
+
+---
+
+### 💖 Built with Love
+
+_Crafted with ❤️ for mental wellness and personal growth_
+
+**PersonaFlow** - _Your journey to a better you starts here_ 🌱
+
+---
+
+⭐ **Star this repo if you find it helpful!** ⭐
 
 </div>

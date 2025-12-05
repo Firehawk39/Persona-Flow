@@ -136,13 +136,6 @@ export default function Home() {
                       data-id="9783628"
                       data-element_type="container"
                       data-settings='{"background_background":"classic"}'
-                      style={{
-                        backgroundImage: 'url(/assets/legacy/vecteezy_vector-autumn-landscape-with-mountain-hills-views-landscape_3523105.jpg)',
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        backgroundRepeat: 'no-repeat',
-                        backgroundAttachment: 'scroll'
-                      }}
                     >
                       <div className="e-con-inner">
                         <div
@@ -407,14 +400,6 @@ export default function Home() {
                       data-id="7a7b871"
                       data-element_type="container"
                       data-settings='{"background_background":"classic"}'
-                      style={{
-                        backgroundImage: 'url(/assets/images/mountain-landscape.jpg)',
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        backgroundRepeat: 'no-repeat',
-                        backgroundAttachment: 'scroll',
-                        padding: '80px 20px'
-                      }}
                     >
                       <div
                         className="elementor-element elementor-element-f392f0b e-flex e-con-boxed e-con e-child"
@@ -522,7 +507,7 @@ export default function Home() {
                                     data-elementor-inline-editing-toolbar="advanced"
                                   >
                                     <p style={{ fontSize: '18px', lineHeight: '1.6' }}>
-                                      Personal growth is a journey, not a destination. PersonaFlow is designed to provide the tools and guidance needed to navigate emotions, build positive habits and discover true potential. Whether seeking clarity through therapy, reflection through journaling or consistency through habit tracking, PersonaFlow supports every step of the way.
+                                      Personal growth is a journey, not a destination. PersonaFlow is designed to provide the tools and guidance needed to navigate emotions, build positive habits and discover true potential. Whether seeking clarity through therapy, reflection through journaling, or consistency through habit tracking, PersonaFlow supports every step of the way.
                                     </p>
                                   </div>
                                 </div>

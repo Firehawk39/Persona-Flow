@@ -1,0 +1,152 @@
+/* PersonaFlow Hybrid - Brand Colors and Utilities */
+
+:root {
+  --brand-bg: #fef3e2;
+  --brand-text: #44403c;
+  --brand-primary: #f59e0b;
+  --brand-primary-hover: #d97706;
+  --brand-accent: #b45309;
+  --brand-gold: #f5c518;
+  --brand-orange: #f9d74a;
+}
+
+/* Brand color utilities */
+.bg-brand-bg {
+  background-color: var(--brand-bg);
+}
+
+.bg-brand-primary {
+  background-color: var(--brand-primary);
+}
+
+.bg-brand-primary\/10 {
+  background-color: rgba(245, 158, 11, 0.1);
+}
+
+.bg-brand-primary\/20 {
+  background-color: rgba(245, 158, 11, 0.2);
+}
+
+.bg-brand-accent\/10 {
+  background-color: rgba(180, 83, 9, 0.1);
+}
+
+.bg-brand-accent\/20 {
+  background-color: rgba(180, 83, 9, 0.2);
+}
+
+.text-brand-text {
+  color: var(--brand-text);
+}
+
+.text-brand-text\/60 {
+  color: rgba(68, 64, 60, 0.6);
+}
+
+.text-brand-text\/70 {
+  color: rgba(68, 64, 60, 0.7);
+}
+
+.text-brand-text\/80 {
+  color: rgba(68, 64, 60, 0.8);
+}
+
+.text-brand-text\/90 {
+  color: rgba(68, 64, 60, 0.9);
+}
+
+.text-brand-primary {
+  color: var(--brand-primary);
+}
+
+.text-brand-accent {
+  color: var(--brand-accent);
+}
+
+.border-brand-text\/10 {
+  border-color: rgba(68, 64, 60, 0.1);
+}
+
+.border-brand-text\/20 {
+  border-color: rgba(68, 64, 60, 0.2);
+}
+
+.border-brand-primary\/20 {
+  border-color: rgba(245, 158, 11, 0.2);
+}
+
+.border-brand-primary\/50 {
+  border-color: rgba(245, 158, 11, 0.5);
+}
+
+.border-brand-accent\/20 {
+  border-color: rgba(180, 83, 9, 0.2);
+}
+
+.hover\:bg-brand-primary-hover:hover {
+  background-color: var(--brand-primary-hover);
+}
+
+.hover\:border-brand-primary\/50:hover {
+  border-color: rgba(245, 158, 11, 0.5);
+}
+
+.ring-brand-primary {
+  --tw-ring-color: var(--brand-primary);
+}
+
+.ring-brand-primary\/50 {
+  --tw-ring-color: rgba(245, 158, 11, 0.5);
+}
+
+.focus-visible\:ring-brand-primary:focus-visible {
+  --tw-ring-color: var(--brand-primary);
+}
+
+.focus\:ring-brand-primary\/50:focus {
+  --tw-ring-color: rgba(245, 158, 11, 0.5);
+}
+
+.focus\:border-brand-primary:focus {
+  border-color: var(--brand-primary);
+}
+
+.shadow-brand-primary\/30 {
+  --tw-shadow-color: rgba(245, 158, 11, 0.3);
+  --tw-shadow: var(--tw-shadow-colored);
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Additional utility classes for the Therapy component */
+.backdrop-blur-sm {
+  backdrop-filter: blur(4px);
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Ensure proper spacing for therapy component */
+.therapy-container {
+  background-color: var(--brand-bg);
+  min-height: 100vh;
+  padding: 2rem;
+}
