@@ -444,8 +444,10 @@ export default function ChatPage() {
           <div 
             ref={chatContainerRef}
             style={{
-            background: messages.length === 0 ? 'transparent' : 'rgba(255, 255, 255, 0.08)',
-            backdropFilter: messages.length === 0 ? 'none' : 'blur(24px)',
+            background: messages.length === 0 ? 'transparent' : 'rgba(255, 255, 255, 0.12)',
+            backdropFilter: messages.length === 0 ? 'none' : 'blur(12px)',
+            WebkitBackdropFilter: messages.length === 0 ? 'none' : 'blur(12px)',
+            willChange: 'transform',
             borderRadius: messages.length === 0 ? '50px' : '32px',
             border: messages.length === 0 ? '1px solid transparent' : '1px solid rgba(255, 255, 255, 0.15)',
             boxShadow: messages.length === 0 ? 'none' : '0 24px 48px rgba(0,0,0,0.05)',
@@ -592,8 +594,9 @@ export default function ChatPage() {
               }}>
 
                 <div style={{
-                  background: 'rgba(255, 255, 255, 0.8)',
-                  backdropFilter: 'blur(16px)',
+                  background: 'rgba(255, 255, 255, 0.85)',
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
                   borderRadius: '50px',
                   padding: '8px',
                   display: 'flex',
@@ -653,8 +656,10 @@ export default function ChatPage() {
 
           {/* Conversation History */}
           <div style={{
-            background: 'rgba(255, 255, 255, 0.1)',
-            backdropFilter: 'blur(20px)',
+            background: 'rgba(255, 255, 255, 0.15)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            willChange: 'transform',
             borderRadius: '20px',
             padding: '32px',
             boxShadow: '0 8px 32px rgba(0,0,0,0.1)',

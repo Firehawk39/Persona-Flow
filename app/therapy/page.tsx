@@ -371,7 +371,9 @@ export default function Therapy() {
             /* Active Chat Session */
             <div style={{
               background: 'rgba(255, 255, 255, 0.1)',
-              backdropFilter: 'blur(20px)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              willChange: 'transform',
               borderRadius: '20px',
               border: '1px solid rgba(255, 255, 255, 0.2)',
               overflow: 'hidden',
@@ -549,8 +551,10 @@ export default function Therapy() {
 
           {/* Session History */}
           <div style={{
-            background: 'rgba(255, 255, 255, 0.1)',
-            backdropFilter: 'blur(20px)',
+            background: 'rgba(255, 255, 255, 0.15)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            willChange: 'transform',
             borderRadius: '20px',
             padding: '32px',
             boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
@@ -679,7 +683,9 @@ export default function Therapy() {
             {viewingSession && (
               <div style={{
                 background: 'rgba(255, 255, 255, 0.1)',
-                backdropFilter: 'blur(20px)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
+                willChange: 'transform',
                 borderRadius: '20px',
                 padding: '40px',
                 boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
