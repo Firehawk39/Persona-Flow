@@ -416,6 +416,7 @@ export default function ChatPage() {
               color: '#4a4a4a',
               marginBottom: '14px',
               lineHeight: '1.2',
+              animation: 'fadeIn 0.8s ease-out',
             }}>
               Ready to find your flow?
             </h1>
@@ -424,6 +425,7 @@ export default function ChatPage() {
               color: '#8b8b8b',
               maxWidth: '700px',
               margin: '0 auto 40px auto',
+              animation: 'fadeIn 0.8s ease-out 0.2s backwards',
             }}>
               Let's navigate your thoughts together.
             </p>
