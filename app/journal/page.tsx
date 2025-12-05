@@ -602,8 +602,8 @@ export default function JournalPage() {
           }}>
             {viewingEntry && (
               <div style={{
-                background: 'rgba(255, 255, 255, 0.6)',
-                backdropFilter: 'blur(12px)',
+                background: 'rgba(255, 255, 255, 0.1)',
+                backdropFilter: 'blur(20px)',
                 borderRadius: '20px',
                 padding: '40px',
                 boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
@@ -671,112 +671,51 @@ export default function JournalPage() {
                 </div>
 
                 {/* Entry Content */}
-                {/* Entry Content & Insight as Chat Bubbles */}
                 <div style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '24px',
+                  fontSize: '18px',
+                  color: '#4a4a4a',
+                  lineHeight: '1.8',
                   marginBottom: '40px',
+                  whiteSpace: 'pre-wrap',
                   padding: '0 20px',
                 }}>
-                  
-                  {/* User Entry Bubble */}
+                  {viewingEntry.text}
+                </div>
+
+                {/* Insight Card */}
+                <div style={{
+                  background: 'rgba(249, 115, 22, 0.1)',
+                  border: '1px solid rgba(249, 115, 22, 0.3)',
+                  borderRadius: '16px',
+                  padding: '24px',
+                  borderLeft: '4px solid #f97316',
+                  margin: '0 20px',
+                }}>
                   <div style={{
                     display: 'flex',
-                    justifyContent: 'flex-end',
-                    alignItems: 'flex-end',
-                    gap: '12px',
+                    gap: '16px',
+                    alignItems: 'flex-start',
                   }}>
-                    <div style={{
-                      maxWidth: '70%',
-                      background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
-                      backdropFilter: 'blur(12px)',
-                      borderRadius: '20px 20px 4px 20px',
-                      padding: '24px',
-                      color: '#ffffff',
-                      boxShadow: '0 4px 12px rgba(249, 115, 22, 0.2)',
-                    }}>
-                      <p style={{
-                        margin: 0,
+                    <span style={{ fontSize: '24px', flexShrink: 0 }}>🎯</span>
+                    <div>
+                      <h4 style={{
                         fontSize: '16px',
-                        lineHeight: '1.6',
-                        whiteSpace: 'pre-wrap',
+                        fontWeight: '600',
+                        color: '#c2410c',
+                        margin: '0 0 8px 0',
                       }}>
-                        {viewingEntry.text}
+                        AI Insight
+                      </h4>
+                      <p style={{
+                        fontSize: '16px',
+                        color: '#c2410c',
+                        lineHeight: '1.6',
+                        margin: 0,
+                      }}>
+                        {viewingEntry.insight}
                       </p>
                     </div>
-
-                    <div style={{
-                      width: '36px',
-                      height: '36px',
-                      borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #4a5568 0%, #2d3748 100%)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '14px',
-                      color: 'white',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                      flexShrink: 0,
-                    }}>
-                      ME
-                    </div>
                   </div>
-
-                  {/* AI Insight Bubble */}
-                  {viewingEntry.insight && (
-                    <div style={{
-                      display: 'flex',
-                      justifyContent: 'flex-start',
-                      alignItems: 'flex-end',
-                      gap: '12px',
-                    }}>
-                      <div style={{
-                        width: '36px',
-                        height: '36px',
-                        borderRadius: '50%',
-                        background: 'rgba(255, 255, 255, 0.8)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '20px',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                        flexShrink: 0,
-                      }}>
-                        🤖
-                      </div>
-                      
-                      <div style={{
-                        maxWidth: '70%',
-                        background: 'rgba(255, 255, 255, 0.7)',
-                        backdropFilter: 'blur(12px)',
-                        borderRadius: '20px 20px 20px 4px',
-                        padding: '24px',
-                        color: '#1a202c',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                        border: '1px solid rgba(255, 255, 255, 0.5)',
-                      }}>
-                         <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            marginBottom: '8px',
-                            color: '#f97316',
-                            fontWeight: '600',
-                            fontSize: '14px',
-                          }}>
-                            <span>🎯</span> Key Insight
-                        </div>
-                        <p style={{
-                          margin: 0,
-                          fontSize: '16px',
-                          lineHeight: '1.6',
-                        }}>
-                          {viewingEntry.insight}
-                        </p>
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
             )}
