@@ -18,7 +18,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
-    const { name, category } = await req.json();
+    const { name, category, scheduledDays } = await req.json();
 
     const { data, error } = await supabase
       .from('habits')
@@ -27,7 +27,8 @@ export async function POST(req: Request) {
           name, 
           category,
           streak: 0,
-          completed_days: [] 
+          completed_days: [],
+          scheduled_days: scheduledDays || null // Store scheduled days or null for daily habits
         }
       ])
       .select()
@@ -55,6 +56,28 @@ export async function PUT(req: Request) {
     if (error) throw error;
 
     return NextResponse.json({ habit: data });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json({ error: 'Habit ID is required' }, { status: 400 });
+    }
+
+    const { error } = await supabase
+      .from('habits')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+
+    return NextResponse.json({ success: true });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

@@ -13,6 +13,7 @@ interface Habit {
   streak: number;
   completedDays: string[];
   dayInWeek: number;
+  scheduledDays?: number[]; // 0=Sunday, 1=Monday, 2=Tuesday, etc. Empty or undefined = all days
 }
 
 const MOCK_HABITS: Habit[] = [
@@ -61,6 +62,7 @@ export default function HabitsPage() {
   const { showToast } = useToast();
   const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
   const [viewingHistory, setViewingHistory] = useState<Habit | null>(null);
+  const [selectedDays, setSelectedDays] = useState<number[]>([]); // For day selection in modal
 
   useEffect(() => {
     fetchHabits();
@@ -123,13 +125,15 @@ export default function HabitsPage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             name: newHabitName,
-            category: newHabitCategory
+            category: newHabitCategory,
+            scheduledDays: selectedDays.length > 0 ? selectedDays : undefined // Only send if days are selected
           })
         });
 
         if (response.ok) {
           setNewHabitName('');
           setNewHabitCategory('Health');
+          setSelectedDays([]); // Reset selected days
           setIsModalOpen(false);
           fetchHabits();
           showToast("New habit created successfully!", "success");
@@ -1090,6 +1094,75 @@ export default function HabitsPage() {
                 ))}
               </div>
             </div>
+
+            {/* Day Selection */}
+            <div style={{ marginBottom: '28px' }}>
+              <label style={{
+                display: 'block',
+                fontSize: '14px',
+                fontWeight: '500',
+                color: '#000000',
+                marginBottom: '12px',
+              }}>
+                Schedule (Optional - leave empty for daily)
+              </label>
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(7, 1fr)',
+                gap: '8px',
+              }}>
+                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => {
+                  const isSelected = selectedDays.includes(index);
+                  return (
+                    <button
+                      key={day}
+                      type="button"
+                      onClick={() => {
+                        if (isSelected) {
+                          setSelectedDays(selectedDays.filter(d => d !== index));
+                        } else {
+                          setSelectedDays([...selectedDays, index].sort());
+                        }
+                      }}
+                      style={{
+                        padding: '10px 4px',
+                        borderRadius: '8px',
+                        border: 'none',
+                        background: isSelected ? '#f97316' : '#f5f5f5',
+                        color: isSelected ? '#ffffff' : '#6b6b6b',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isSelected) {
+                          e.currentTarget.style.background = '#e5e5e5';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isSelected) {
+                          e.currentTarget.style.background = '#f5f5f5';
+                        }
+                      }}
+                    >
+                      {day}
+                    </button>
+                  );
+                })}
+              </div>
+              {selectedDays.length > 0 && (
+                <p style={{
+                  fontSize: '12px',
+                  color: '#f97316',
+                  marginTop: '8px',
+                  marginBottom: 0,
+                }}>
+                  ✓ Habit will appear on: {selectedDays.map(d => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d]).join(', ')}
+                </p>
+              )}
+            </div>
+
             {/* Action Buttons */}
             <div style={{
               display: 'flex',

@@ -1,52 +1,50 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+
+// Check if we're in demo mode
+const isDemoMode = () => {
+  return process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
+};
+
+// Get appropriate webhook URL based on mode
+const getWebhookUrl = () => {
+  if (isDemoMode()) {
+    // Demo webhook - simple Ollama only, no database
+    return process.env.N8N_DEMO_WEBHOOK_URL || process.env.NEXT_PUBLIC_N8N_DEMO_WEBHOOK_URL;
+  } else {
+    // Personal webhook - full workflow with Supabase + Ollama + ChromaDB
+    return process.env.N8N_WEBHOOK_URL || process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL;
+  }
+};
 
 export async function POST(req: Request) {
   try {
     const { message, history, context, sessionId } = await req.json();
-    const webhookUrl = process.env.N8N_WEBHOOK_URL;
+    const webhookUrl = getWebhookUrl();
 
     if (!webhookUrl) {
       return NextResponse.json(
-        { error: 'n8n Webhook URL not configured' },
+        { 
+          error: isDemoMode() 
+            ? 'Demo n8n webhook not configured. Please set N8N_DEMO_WEBHOOK_URL.' 
+            : 'n8n webhook not configured. Please set N8N_WEBHOOK_URL.',
+          mode: isDemoMode() ? 'demo' : 'personal'
+        },
         { status: 500 }
       );
     }
 
-    // 1. Handle Session
-    let currentSessionId = sessionId;
-    if (!currentSessionId) {
-      const { data: session, error: sessionError } = await supabase
-        .from('chat_sessions')
-        .insert([{ title: message.substring(0, 50) + '...' }])
-        .select()
-        .single();
-      
-      if (sessionError) throw sessionError;
-      currentSessionId = session.id;
-    }
-
-    // 2. Save User Message
-    const { error: userMsgError } = await supabase
-      .from('messages')
-      .insert([{ 
-        session_id: currentSessionId, 
-        role: 'user', 
-        content: message 
-      }]);
-
-    if (userMsgError) throw userMsgError;
-
-    // 3. Call n8n Webhook
+    // Prepare payload for n8n
     const payload = {
       message,
-      history,
+      history: isDemoMode() ? history.slice(-5) : history, // Limit history in demo mode
       context,
-      sessionId: currentSessionId,
+      sessionId: sessionId || (isDemoMode() ? `demo-${Date.now()}` : null),
       timestamp: new Date().toISOString(),
+      mode: isDemoMode() ? 'demo' : 'personal',
       source: 'chat'
     };
 
+    // Call n8n webhook - n8n handles everything (Supabase, Ollama, ChromaDB)
     const response = await fetch(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -58,29 +56,28 @@ export async function POST(req: Request) {
     }
 
     const data = await response.json();
-    const aiResponse = data.text || data.output || data.response || data.message || JSON.stringify(data);
-
-    // 4. Save AI Response
-    const { error: aiMsgError } = await supabase
-      .from('messages')
-      .insert([{ 
-        session_id: currentSessionId, 
-        role: 'assistant', 
-        content: aiResponse 
-      }]);
-
-    if (aiMsgError) throw aiMsgError;
+    
+    // Extract AI response from n8n
+    const aiResponse = data.text || data.output || data.response || data.message || 'No response from AI';
+    const returnedSessionId = data.sessionId || payload.sessionId;
 
     return NextResponse.json({ 
       response: aiResponse, 
-      sessionId: currentSessionId 
+      sessionId: returnedSessionId,
+      mode: isDemoMode() ? 'demo' : 'personal',
+      contextUsed: data.contextUsed || false,
+      note: isDemoMode() ? 'Demo mode - data stored in cookies only' : 'Personal mode - data saved to Supabase via n8n'
     });
 
   } catch (error: any) {
     console.error('Chat API Error:', error);
     return NextResponse.json(
-      { error: error.message || 'Internal Server Error' },
+      { 
+        error: error.message || 'Internal Server Error',
+        mode: isDemoMode() ? 'demo' : 'personal'
+      },
       { status: 500 }
     );
   }
 }
+
