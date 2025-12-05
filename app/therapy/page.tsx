@@ -682,7 +682,7 @@ export default function Therapy() {
           }}>
             {viewingSession && (
               <div style={{
-                background: 'rgba(255, 255, 255, 0.1)',
+                background: 'rgba(255, 255, 255, 0.95)',
                 backdropFilter: 'blur(12px)',
                 WebkitBackdropFilter: 'blur(12px)',
                 willChange: 'transform',
