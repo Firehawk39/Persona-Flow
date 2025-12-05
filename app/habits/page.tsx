@@ -422,9 +422,8 @@ export default function HabitsPage() {
           {/* Today's Focus */}
           <div 
             style={{
-              background: 'rgba(255, 255, 255, 0.35)',
-              backdropFilter: 'blur(12px)',
-              WebkitBackdropFilter: 'blur(12px)',
+              background: 'rgba(255, 255, 255, 0.9)',
+              // backdropFilter removed for performance
               willChange: 'transform',
               borderRadius: '20px',
               padding: '24px',
@@ -526,9 +525,8 @@ export default function HabitsPage() {
           {/* Current Streak */}
           <div 
             style={{
-              background: 'rgba(255, 255, 255, 0.35)',
-              backdropFilter: 'blur(12px)',
-              WebkitBackdropFilter: 'blur(12px)',
+              background: 'rgba(255, 255, 255, 0.9)',
+              // backdropFilter removed for performance
               willChange: 'transform',
               borderRadius: '20px',
               padding: '24px',
@@ -585,9 +583,8 @@ export default function HabitsPage() {
           {/* Perfect Days */}
           <div 
             style={{
-              background: 'rgba(255, 255, 255, 0.35)',
-              backdropFilter: 'blur(12px)',
-              WebkitBackdropFilter: 'blur(12px)',
+              background: 'rgba(255, 255, 255, 0.9)',
+              // backdropFilter removed for performance
               willChange: 'transform',
               borderRadius: '20px',
               padding: '24px',
@@ -653,9 +650,8 @@ export default function HabitsPage() {
               key={habit.id}
               style={{
                 animation: `fadeIn 0.5s ease-out ${index * 0.1}s backwards`,
-                background: 'rgba(255, 255, 255, 0.35)',
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)',
+                background: 'rgba(255, 255, 255, 0.9)',
+                // backdropFilter removed for performance
                 willChange: 'transform',
                 borderRadius: '20px',
                 padding: '24px',
