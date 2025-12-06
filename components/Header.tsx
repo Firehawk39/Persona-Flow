@@ -1,104 +1,126 @@
 "use client";
-
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Activity, Book, MessageCircle, Settings, Info, Home } from 'lucide-react';
 
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  const navItems = [
-    { name: 'Home', href: '/', icon: Home },
-    { name: 'Therapy', href: '/therapy', icon: Activity },
-    { name: 'Journal', href: '/journal', icon: Book },
-    { name: 'Habits', href: '/habits', icon: Activity },
-    { name: 'Flow AI', href: '/chat', icon: MessageCircle },
-    { name: 'Settings', href: '/settings', icon: Settings },
-    { name: 'About', href: '/about', icon: Info },
-  ];
-
-  const isActive = (path: string) => pathname === path;
+  const isActive = (path: string) => {
+    return pathname === path ? "current-menu-item page_item current_page_item" : "";
+  };
 
   return (
-    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex-shrink-0 flex items-center">
-            <Link href="/" className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl">
-                    P
-                </div>
-                <span className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
-                    PersonaFlow
-                </span>
-            </Link>
-          </div>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-1">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const active = isActive(item.href);
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                    active
-                      ? 'bg-indigo-50 text-indigo-700 shadow-sm'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                  }`}
-                >
-                  <Icon size={16} className={`mr-1.5 ${active ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500'}`} />
-                  {item.name}
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
-              aria-expanded="false"
+    <header
+      className="site-header header-main-layout-1 ast-primary-menu-enabled ast-hide-custom-menu-mobile ast-builder-menu-toggle-icon ast-mobile-header-inline"
+      id="masthead"
+      itemType="https://schema.org/WPHeader"
+      itemScope
+      itemID="#masthead"
+    >
+      <div id="ast-desktop-header" data-toggle-type="dropdown">
+        <div className="ast-main-header-wrap main-header-bar-wrap ">
+          <div
+            className="ast-primary-header-bar ast-primary-header main-header-bar site-header-focus-item"
+            data-section="section-primary-header-builder"
+          >
+            <div
+              className="site-primary-header-wrap ast-builder-grid-row-container site-header-focus-item ast-container"
+              data-section="section-primary-header-builder"
             >
-              <span className="sr-only">Open main menu</span>
-              {isMenuOpen ? (
-                <X className="block h-6 w-6" aria-hidden="true" />
-              ) : (
-                <Menu className="block h-6 w-6" aria-hidden="true" />
-              )}
-            </button>
+              <div className="ast-builder-grid-row ast-builder-grid-row-has-sides ast-builder-grid-row-no-center">
+                <div className="site-header-primary-section-left site-header-section ast-flex site-header-section-left">
+                  <div
+                    className="ast-builder-layout-element ast-flex site-header-focus-item"
+                    data-section="title_tagline"
+                  >
+                    <div
+                      className="site-branding ast-site-identity"
+                      itemType="https://schema.org/Organization"
+                      itemScope
+                    >
+                      <span className="site-logo-img">
+                        <Link
+                          href="/"
+                          className="custom-logo-link"
+                          rel="home"
+                        >
+                          <img
+                            width="178"
+                            height="59"
+                            src="/assets/images/logo.png"
+                            className="custom-logo"
+                            alt="PersonaFlow"
+                            decoding="async"
+                          />
+                        </Link>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="site-header-primary-section-right site-header-section ast-flex ast-grid-right-section">
+                  <div
+                    className="ast-builder-menu-1 ast-builder-menu ast-flex ast-builder-menu-1-focus-item ast-builder-layout-element site-header-focus-item"
+                    data-section="section-hb-menu-1"
+                  >
+                    <div className="ast-main-header-bar-alignment">
+                      <div className="main-header-bar-navigation">
+                        <nav
+                          className="site-navigation ast-flex-grow-1 navigation-accessibility site-header-focus-item"
+                          id="primary-site-navigation-desktop"
+                          aria-label="Primary Site Navigation"
+                          itemType="https://schema.org/SiteNavigationElement"
+                          itemScope
+                        >
+                          <div className="main-navigation ast-inline-flex">
+                            <ul
+                              id="ast-hf-menu-1"
+                              className="main-header-menu ast-menu-shadow ast-nav-menu ast-flex  submenu-with-border stack-on-mobile"
+                            >
+                              <li className={`menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-1808 ${isActive('/')}`}>
+                                <Link href="/" className="menu-link" aria-current={pathname === '/' ? 'page' : undefined}>
+                                  Home
+                                </Link>
+                              </li>
+                              <li className={`menu-item menu-item-type-post_type menu-item-object-page menu-item-1878 ${isActive('/therapy')}`}>
+                                <Link
+                                  href="/therapy"
+                                  className="menu-link"
+                                  aria-current={pathname === '/therapy' ? 'page' : undefined}
+                                >
+                                  Therapy
+                                </Link>
+                              </li>
+                              <li className={`menu-item menu-item-type-post_type menu-item-object-page menu-item-journal ${isActive('/journal')}`}>
+                                <Link href="/journal" className="menu-link" aria-current={pathname === '/journal' ? 'page' : undefined}>
+                                  Journal
+                                </Link>
+                              </li>
+                              <li className={`menu-item menu-item-type-post_type menu-item-object-page menu-item-1880 ${isActive('/habits')}`}>
+                                <Link href="/habits" className="menu-link" aria-current={pathname === '/habits' ? 'page' : undefined}>
+                                  Habits
+                                </Link>
+                              </li>
+                              <li className={`menu-item menu-item-type-post_type menu-item-object-page menu-item-chat ${isActive('/chat')}`}>
+                                <Link href="/chat" className="menu-link" aria-current={pathname === '/chat' ? 'page' : undefined}>
+                                  Flow AI
+                                </Link>
+                              </li>
+                              <li className={`menu-item menu-item-type-post_type menu-item-object-page menu-item-settings ${isActive('/settings')}`}>
+                                <Link href="/settings" className="menu-link" aria-current={pathname === '/settings' ? 'page' : undefined}>
+                                  Settings
+                                </Link>
+                              </li>
+                            </ul>
+                          </div>
+                        </nav>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
-      <div className={`md:hidden transition-all duration-300 ease-in-out overflow-hidden ${isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
-        <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-b border-gray-100 shadow-lg">
-          {navItems.map((item) => {
-             const Icon = item.icon;
-             const active = isActive(item.href);
-             return (
-              <Link
-                key={item.name}
-                href={item.href}
-                onClick={() => setIsMenuOpen(false)}
-                className={`flex items-center px-3 py-2 rounded-md text-base font-medium ${
-                    active
-                      ? 'bg-indigo-50 text-indigo-700'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                  }`}
-              >
-                <Icon size={18} className={`mr-3 ${active ? 'text-indigo-600' : 'text-gray-400'}`} />
-                {item.name}
-              </Link>
-            );
-          })}
         </div>
       </div>
     </header>

@@ -1,0 +1,191 @@
+{
+  "name": "PersonaFlow Chat Hybrid",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "chat",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        380,
+        240
+      ],
+      "webhookId": "personaflow-chat"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "userMessage",
+              "value": "={{ $json.body.message }}"
+            },
+            {
+              "name": "sessionId",
+              "value": "={{ $json.body.sessionId || $json.body.session_id }}"
+            },
+            {
+              "name": "history",
+              "value": "={{ $json.body.history }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-variables",
+      "name": "Set Input Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        600,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO messages (session_id, content, role) VALUES ($1, $2, 'user') RETURNING id;",
+        "additionalFields": {
+          "queryParams": "={{ [$json.sessionId, $json.userMessage] }}"
+        }
+      },
+      "id": "supabase-save-user",
+      "name": "Supabase: Save User Msg",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [
+        820,
+        240
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "supabase-creds",
+          "name": "Supabase Postgres Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama3.2:1b",
+        "prompt": "={{ $json.userMessage }}",
+        "options": {
+          "system": "You are PersonaFlow, a gentle, empathetic AI companion focused on mental wellness, productivity, and personal growth. Keep responses concise, warm, and supportive. Use current chat history context if available."
+        }
+      },
+      "id": "ollama-chat",
+      "name": "Ollama Chat",
+      "type": "n8n-nodes-base.ollama",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        240
+      ],
+      "credentials": {
+        "ollamaApi": {
+          "id": "ollama-local",
+          "name": "Ollama Local"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO messages (session_id, content, role) VALUES ($1, $2, 'assistant') RETURNING id;",
+        "additionalFields": {
+          "queryParams": "={{ [$('set-variables').item.json.sessionId, $json.response] }}"
+        }
+      },
+      "id": "supabase-save-ai",
+      "name": "Supabase: Save AI Msg",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [
+        1260,
+        240
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "supabase-creds",
+          "name": "Supabase Postgres Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"response\": \"{{ $json.response }}\",\n  \"sessionId\": \"{{ $('set-variables').item.json.sessionId }}\"\n}",
+        "options": {}
+      },
+      "id": "webhook-response",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1480,
+        240
+      ]
+    }
+  ],
+  "connections": {
+    "webhook-trigger": {
+      "main": [
+        [
+          {
+            "node": "set-variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set-variables": {
+      "main": [
+        [
+          {
+            "node": "supabase-save-user",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "supabase-save-user": {
+      "main": [
+        [
+          {
+            "node": "ollama-chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ollama-chat": {
+      "main": [
+        [
+          {
+            "node": "supabase-save-ai",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "supabase-save-ai": {
+      "main": [
+        [
+          {
+            "node": "webhook-response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
