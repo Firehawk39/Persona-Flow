@@ -206,12 +206,13 @@ export default function HabitsPage() {
         zIndex: -1,
       }}>
         <Image
-          src="/assets/images/autumn-landscape.png"
+          src="/assets/images/universal-bg.png"
           alt="Background"
           fill
           style={{ objectFit: 'cover', objectPosition: 'center' }}
           priority
           quality={100}
+          unoptimized
         />
       </div>
 
