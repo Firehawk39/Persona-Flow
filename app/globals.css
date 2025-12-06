@@ -1,6 +1,9 @@
 /* Cleared to avoid conflicts with original CSS */
-html {
+html,
+body {
   overflow-y: scroll;
+  margin: 0;
+  padding: 0;
 }
 
 /* Force Apple Emoji Style */
