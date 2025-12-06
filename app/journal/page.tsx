@@ -210,7 +210,7 @@ export default function JournalPage() {
         zIndex: -1,
       }}>
         <Image
-          src="/assets/images/golden-field-hd.jpg"
+          src="/assets/images/autumn-landscape.png"
           alt="Background"
           fill
           style={{ objectFit: 'cover', objectPosition: 'center' }}
