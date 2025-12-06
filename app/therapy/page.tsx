@@ -87,7 +87,18 @@ export default function Therapy() {
       {/* Header */}
       <Header />
 
-      {/* Main Content */}
+      {/* Background Image */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundImage: 'url(/assets/images/golden-field-v2.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        zIndex: -1,
+      }} />
 
       {/* Main Content */}
       <div style={{

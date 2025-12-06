@@ -195,6 +195,19 @@ export default function HabitsPage() {
       
       <Header />
 
+      {/* Background Image */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundImage: 'url(/assets/images/golden-field-v2.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        zIndex: -1,
+      }} />
+
       {/* Main Content */}
       <div style={{
         maxWidth: '1400px',
