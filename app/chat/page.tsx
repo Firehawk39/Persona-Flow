@@ -273,7 +273,7 @@ export default function ChatPage() {
         zIndex: -1,
       }}>
         <Image
-          src="/assets/images/golden-field-v2.jpg"
+          src="/assets/images/golden-field-hd.jpg"
           alt="Background"
           fill
           style={{ objectFit: 'cover', objectPosition: 'center' }}
