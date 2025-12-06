@@ -284,6 +284,11 @@ export default function HabitsPage() {
                                     Flow AI
                                   </Link>
                                 </li>
+                                <li className="menu-item menu-item-type-post_type menu-item-object-page menu-item-settings">
+                                  <Link href="/settings" className="menu-link">
+                                    Settings
+                                  </Link>
+                                </li>
                               </ul>
                             </div>
                           </nav>
