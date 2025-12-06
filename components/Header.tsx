@@ -44,6 +44,7 @@ const Header = () => {
                           href="/"
                           className="custom-logo-link"
                           rel="home"
+                          target="_self"
                         >
                           <img
                             width="178"
@@ -78,7 +79,7 @@ const Header = () => {
                               className="main-header-menu ast-menu-shadow ast-nav-menu ast-flex  submenu-with-border stack-on-mobile"
                             >
                               <li className={`menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-1808 ${isActive('/')}`}>
-                                <Link href="/" className="menu-link" aria-current={pathname === '/' ? 'page' : undefined}>
+                                <Link href="/" className="menu-link" aria-current={pathname === '/' ? 'page' : undefined} target="_self">
                                   Home
                                 </Link>
                               </li>
@@ -87,27 +88,28 @@ const Header = () => {
                                   href="/therapy"
                                   className="menu-link"
                                   aria-current={pathname === '/therapy' ? 'page' : undefined}
+                                  target="_self"
                                 >
                                   Therapy
                                 </Link>
                               </li>
                               <li className={`menu-item menu-item-type-post_type menu-item-object-page menu-item-journal ${isActive('/journal')}`}>
-                                <Link href="/journal" className="menu-link" aria-current={pathname === '/journal' ? 'page' : undefined}>
+                                <Link href="/journal" className="menu-link" aria-current={pathname === '/journal' ? 'page' : undefined} target="_self">
                                   Journal
                                 </Link>
                               </li>
                               <li className={`menu-item menu-item-type-post_type menu-item-object-page menu-item-1880 ${isActive('/habits')}`}>
-                                <Link href="/habits" className="menu-link" aria-current={pathname === '/habits' ? 'page' : undefined}>
+                                <Link href="/habits" className="menu-link" aria-current={pathname === '/habits' ? 'page' : undefined} target="_self">
                                   Habits
                                 </Link>
                               </li>
                               <li className={`menu-item menu-item-type-post_type menu-item-object-page menu-item-chat ${isActive('/chat')}`}>
-                                <Link href="/chat" className="menu-link" aria-current={pathname === '/chat' ? 'page' : undefined}>
+                                <Link href="/chat" className="menu-link" aria-current={pathname === '/chat' ? 'page' : undefined} target="_self">
                                   Flow AI
                                 </Link>
                               </li>
                               <li className={`menu-item menu-item-type-post_type menu-item-object-page menu-item-settings ${isActive('/settings')}`}>
-                                <Link href="/settings" className="menu-link" aria-current={pathname === '/settings' ? 'page' : undefined}>
+                                <Link href="/settings" className="menu-link" aria-current={pathname === '/settings' ? 'page' : undefined} target="_self">
                                   Settings
                                 </Link>
                               </li>
