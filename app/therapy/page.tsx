@@ -481,10 +481,11 @@ export default function Therapy() {
               gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
               gap: '20px',
             }}>
-              {sessionHistory.map((session) => (
+              {sessionHistory.map((session, index) => (
                 <div
                   key={session.id}
                   style={{
+                    animation: `fadeIn 0.5s ease-out ${index * 0.1}s backwards`,
                     background: 'rgba(255, 255, 255, 0.15)',
                     backdropFilter: 'blur(10px)',
                     border: '1px solid rgba(255, 255, 255, 0.3)',

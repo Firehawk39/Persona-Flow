@@ -577,11 +577,12 @@ export default function ChatPage() {
               gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))',
               gap: '24px',
             }}>
-              {conversationHistory.map((conversation) => (
+              {conversationHistory.map((conversation, index) => (
                 <div
                   key={conversation.id}
                   onClick={() => handleViewConversation(conversation)}
                   style={{
+                    animation: `fadeIn 0.5s ease-out ${index * 0.1}s backwards`,
                     background: 'rgba(255, 255, 255, 0.15)',
                     backdropFilter: 'blur(10px)',
                     border: '1px solid rgba(255, 255, 255, 0.3)',

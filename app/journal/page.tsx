@@ -643,13 +643,14 @@ export default function JournalPage() {
               gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))',
               gap: '24px',
             }}>
-              {recentEntries.map((entry) => (
+              {recentEntries.map((entry, index) => (
                 <div
                   key={entry.id}
                   onClick={() => handleViewEntry(entry)}
                   role="article"
                   aria-label={`View journal entry from ${entry.date} with ${entry.mood} mood`}
                   style={{
+                    animation: `fadeIn 0.5s ease-out ${index * 0.1}s backwards`,
                     background: 'rgba(255, 255, 255, 0.15)',
                     backdropFilter: 'blur(10px)',
                     border: '1px solid rgba(255, 255, 255, 0.3)',
