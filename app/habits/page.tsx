@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import BodyClassUpdater from "../../components/BodyClassUpdater";
 import { Button, useToast } from "@/components/ui";
 import Header from "@/components/Header";
@@ -200,13 +201,19 @@ export default function HabitsPage() {
         position: 'fixed',
         top: 0,
         left: 0,
-        width: '100%',
-        height: '100%',
-        backgroundImage: 'url(/assets/images/golden-field-v2.jpg)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        width: '100vw',
+        height: '100vh',
         zIndex: -1,
-      }} />
+      }}>
+        <Image
+          src="/assets/images/golden-field-v2.jpg"
+          alt="Background"
+          fill
+          style={{ objectFit: 'cover', objectPosition: 'center' }}
+          priority
+          quality={100}
+        />
+      </div>
 
       {/* Main Content */}
       <div style={{

@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import BodyClassUpdater from "../../components/BodyClassUpdater";
 import { useToast } from "@/components/ui";
 import Header from "@/components/Header";
@@ -255,14 +256,31 @@ export default function ChatPage() {
       handleSendMessage();
     }
   };
+
+  return (
+    <>
+      <BodyClassUpdater className="page-chat wp-singular page-template-default page wp-custom-logo wp-embed-responsive wp-theme-astra eio-default ehf-template-astra ehf-stylesheet-astra ast-desktop ast-page-builder-template ast-no-sidebar astra-4.11.15 ast-single-post ast-inherit-site-logo-transparent ast-theme-transparent-header ast-hfb-header elementor-default elementor-kit-1659 elementor-page customize-support dialog-body dialog-buttons-body dialog-container dialog-buttons-container" />
+      
+      <Header />
+
+      {/* Background Image */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
         left: 0,
-        width: '100%',
-        height: '100%',
-        backgroundImage: 'url(/assets/images/golden-field-v2.jpg)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        width: '100vw',
+        height: '100vh',
         zIndex: -1,
-      }} />
+      }}>
+        <Image
+          src="/assets/images/golden-field-v2.jpg"
+          alt="Background"
+          fill
+          style={{ objectFit: 'cover', objectPosition: 'center' }}
+          priority
+          quality={100}
+        />
+      </div>
 
       {/* Main Content */}
       <div style={{
