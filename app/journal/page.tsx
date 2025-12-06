@@ -202,11 +202,11 @@ export default function JournalPage() {
 
       {/* Background Image */}
       <div style={{
-        position: 'fixed',
+        position: 'absolute',
         top: 0,
         left: 0,
-        width: '100vw',
-        height: '100vh',
+        width: '100%',
+        minHeight: '100vh',
         zIndex: -1,
         backgroundImage: 'url("/assets/legacy/vecteezy_vector-autumn-landscape-with-mountain-hills-views-landscape_3523105.jpg")',
         backgroundSize: 'cover',
