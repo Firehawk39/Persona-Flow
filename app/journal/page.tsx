@@ -208,17 +208,11 @@ export default function JournalPage() {
         width: '100vw',
         height: '100vh',
         zIndex: -1,
-      }}>
-        <Image
-          src="/assets/images/universal-bg.png"
-          alt="Background"
-          fill
-          style={{ objectFit: 'cover', objectPosition: 'center' }}
-          priority
-          quality={100}
-          unoptimized
-        />
-      </div>
+        backgroundImage: 'url("/assets/legacy/vecteezy_vector-autumn-landscape-with-mountain-hills-views-landscape_3523105.jpg")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center center',
+        backgroundRepeat: 'no-repeat',
+      }} />
 
       {/* Main Content */}
       <div style={{
