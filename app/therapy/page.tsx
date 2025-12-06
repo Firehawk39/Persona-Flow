@@ -179,11 +179,6 @@ export default function Therapy() {
                                     Flow AI
                                   </Link>
                                 </li>
-                                <li className="menu-item menu-item-type-post_type menu-item-object-page menu-item-settings">
-                                  <Link href="/settings" className="menu-link">
-                                    Settings
-                                  </Link>
-                                </li>
                               </ul>
                             </div>
                           </nav>
@@ -197,6 +192,7 @@ export default function Therapy() {
           </div>
         </div>
       </header>
+
       {/* Main Content */}
       <div style={{
         maxWidth: '1400px',
