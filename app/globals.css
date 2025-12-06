@@ -1,4 +1,7 @@
 /* Cleared to avoid conflicts with original CSS */
+html {
+  overflow-y: scroll;
+}
 
 /* Force Apple Emoji Style */
 * {
