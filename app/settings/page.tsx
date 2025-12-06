@@ -5,6 +5,7 @@ import SettingsComponent from '@/components/settings/Settings';
 import BodyClassUpdater from '@/components/BodyClassUpdater';
 import { UserSettings } from '@/lib/types';
 import { useToast } from '@/components/ui';
+import Image from "next/image";
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState<UserSettings>({
@@ -38,19 +39,39 @@ export default function SettingsPage() {
       
       <Header />
 
+      {/* Background Image */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        zIndex: -1,
+      }}>
+        <Image
+          src="/assets/images/golden-field-v2.jpg"
+          alt="Background"
+          fill
+          style={{ objectFit: 'cover', objectPosition: 'center' }}
+          priority
+          quality={100}
+        />
+      </div>
+
       {/* Main Content */}
       <div style={{
-        maxWidth: '1400px',
+        maxWidth: '1000px',
         margin: '40px auto',
         padding: '0 20px',
+        minHeight: '80vh', /* Ensure it takes up space */
       }}>
         <div style={{
-          background: 'rgba(255, 255, 255, 0.8)', // Consistent glass style
-          backdropFilter: 'blur(12px)',
-          borderRadius: '20px',
+          background: 'rgba(255, 255, 255, 0.6)',
+          backdropFilter: 'blur(20px)',
+          borderRadius: '32px',
           padding: '40px',
           boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-          border: '1px solid rgba(255, 255, 255, 0.5)',
+          border: '1px solid rgba(255, 255, 255, 0.4)',
         }}>
             <SettingsComponent settings={settings} onSave={handleSave} />
         </div>
