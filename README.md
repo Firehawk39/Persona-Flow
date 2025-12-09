@@ -11,6 +11,8 @@
 
 </div>
 
+> **🎯 Demo Version Notice:** This repository contains the **public demo version** of PersonaFlow, configured for showcasing to recruiters and potential users. The Settings page is intentionally hidden in this version. For information about personal use with your own backend, see [SETTINGS_INFO.md](SETTINGS_INFO.md).
+
 ---
 
 ## 🎯 Overview
