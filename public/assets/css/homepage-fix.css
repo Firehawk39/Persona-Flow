@@ -145,3 +145,35 @@ body {
     max-width: 1200px !important;
 }
 
+
+/* Make About Section background white */
+.elementor-1448 .elementor-element.elementor-element-79c45e3 {
+    background-color: #ffffff !important;
+    margin-left: calc(-50vw + 50%) !important;
+    margin-right: calc(-50vw + 50%) !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    padding: 80px 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+.elementor-1448 .elementor-element.elementor-element-79c45e3 > .e-con-inner {
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    padding: 0 20px !important;
+}
+
+/* Ensure the text is readable on white */
+.elementor-1448 .elementor-element.elementor-element-79c45e3 .hfe-infocard-title,
+.elementor-1448 .elementor-element.elementor-element-79c45e3 .hfe-infocard-text p {
+    color: #2d3436 !important;
+}
+
+/* Make footer background white */
+.home .site-footer,
+.page-id-1448 .site-footer {
+    background-color: #ffffff !important;
+    position: relative;
+    z-index: 10;
+}

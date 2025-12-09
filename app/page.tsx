@@ -457,7 +457,7 @@ export default function Home() {
       >
         <div style={{ 
           padding: '40px 20px', 
-          background: 'transparent', 
+          background: '#ffffff', 
           display: 'flex', 
           justifyContent: 'center', 
           alignItems: 'center',

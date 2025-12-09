@@ -30,6 +30,14 @@ export default function SettingsPage() {
   const handleSave = (newSettings: UserSettings) => {
     setSettings(newSettings);
     localStorage.setItem('userSettings', JSON.stringify(newSettings));
+    
+    // Also save webhook URL to the key used by api-client
+    if (newSettings.n8nWebhookUrl) {
+      localStorage.setItem('n8n_webhook_url', newSettings.n8nWebhookUrl);
+    } else {
+      localStorage.removeItem('n8n_webhook_url');
+    }
+    
     showToast("Settings saved!", "success");
   };
 

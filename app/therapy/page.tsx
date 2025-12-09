@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import BodyClassUpdater from "../../components/BodyClassUpdater";
 import Header from "@/components/Header";
+import { sendChatMessage, isDemoMode } from "@/lib/api-client";
 
 export default function Therapy() {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -388,19 +389,6 @@ export default function Therapy() {
                 borderTop: '1px solid rgba(255, 255, 255, 0.2)',
                 background: 'rgba(255, 255, 255, 0.05)',
               }}>
-                {/* Warning Message */}
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  marginBottom: '12px',
-                  color: '#c2410c',
-                  fontSize: '13px',
-                }}>
-                  <span>⚠️</span>
-                  <span>Warning: n8n webhook URL not configured in Settings.</span>
-                </div>
-
                 {/* Input Box */}
                 <div style={{
                   display: 'flex',

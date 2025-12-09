@@ -108,11 +108,13 @@ const Header = () => {
                                   Flow AI
                                 </Link>
                               </li>
-                              <li className={`menu-item menu-item-type-post_type menu-item-object-page menu-item-settings ${isActive('/settings')}`}>
-                                <Link href="/settings" className="menu-link" aria-current={pathname === '/settings' ? 'page' : undefined} target="_self">
-                                  Settings
-                                </Link>
-                              </li>
+                              {process.env.NEXT_PUBLIC_HIDE_SETTINGS !== 'true' && (
+                                <li className={`menu-item menu-item-type-post_type menu-item-object-page menu-item-settings ${isActive('/settings')}`}>
+                                  <Link href="/settings" className="menu-link" aria-current={pathname === '/settings' ? 'page' : undefined} target="_self">
+                                    Settings
+                                  </Link>
+                                </li>
+                              )}
                             </ul>
                           </div>
                         </nav>

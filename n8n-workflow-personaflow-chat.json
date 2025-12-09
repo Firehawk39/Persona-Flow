@@ -1,0 +1,127 @@
+{
+  "name": "PersonaFlow - AI Chat",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "personaflow-chat",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "personaflow-chat"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract data from webhook\nconst message = $input.item.json.body.message;\nconst history = $input.item.json.body.history || [];\nconst context = $input.item.json.body.context || {};\nconst sessionId = $input.item.json.body.sessionId;\n\n// Format conversation history for OpenAI\nconst messages = history.map(msg => ({\n  role: msg.role === 'user' ? 'user' : 'assistant',\n  content: msg.content\n}));\n\n// Add current message\nmessages.push({\n  role: 'user',\n  content: message\n});\n\nreturn {\n  json: {\n    messages,\n    context,\n    sessionId,\n    currentMessage: message\n  }\n};"
+      },
+      "name": "Extract Message Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-3.5-turbo",
+        "messages": {
+          "messageValues": [
+            {
+              "role": "system",
+              "content": "You are a compassionate AI companion for PersonaFlow, a personal growth and mental wellness app.\n\nYour role:\n- Provide empathetic, supportive responses\n- Help users reflect on their thoughts and feelings  \n- Offer gentle guidance for personal growth\n- Encourage mindfulness and self-awareness\n- Keep responses concise but meaningful (2-4 sentences)\n\nTone: Warm, understanding, non-judgmental\nStyle: Conversational, encouraging, insightful\n\nContext: The user is using PersonaFlow to work on their mental wellness through therapy chat, journaling, and habit tracking."
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 300
+        }
+      },
+      "name": "OpenAI Chat",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [650, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "1",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract AI response\nconst aiMessage = $input.item.json.choices[0].message.content;\n\n// Format response for PersonaFlow\nreturn {\n  json: {\n    text: aiMessage,\n    response: aiMessage,\n    output: aiMessage,\n    message: aiMessage,\n    timestamp: new Date().toISOString(),\n    model: 'gpt-3.5-turbo',\n    sessionId: $input.item.json.sessionId\n  }\n};"
+      },
+      "name": "Format Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      },
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extract Message Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Message Data": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Response": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2024-01-01T00:00:00.000Z",
+  "versionId": "1"
+}

@@ -85,17 +85,17 @@ const Settings: React.FC<SettingsProps> = ({ settings, onSave }) => {
         {/* Integration Section */}
         <div>
           <h3 style={{ fontSize: '20px', fontWeight: '600', color: '#4a4a4a', marginBottom: '16px', borderBottom: '1px solid rgba(0,0,0,0.1)', paddingBottom: '8px' }}>
-            n8n Integration
+            🔒 Privacy-First Integration
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <label style={{ fontSize: '14px', fontWeight: '500', color: '#4a4a4a', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <LinkIcon size={16} /> Webhook URL
+              <LinkIcon size={16} /> Personal n8n Webhook URL
             </label>
             <input 
               type="url" 
               value={formData.n8nWebhookUrl}
               onChange={(e) => handleChange('n8nWebhookUrl', e.target.value)}
-              placeholder="https://your-n8n-instance.com/webhook/..."
+              placeholder="https://your-ngrok-url.ngrok.io/webhook/personal-chat"
               style={{
                 width: '100%',
                 padding: '12px 16px',
@@ -120,8 +120,28 @@ const Settings: React.FC<SettingsProps> = ({ settings, onSave }) => {
               }}
             />
             <p style={{ fontSize: '13px', color: '#8b8b8b', marginTop: '4px' }}>
-              Used for syncing habits and journal entries with your personal n8n workflow.
+              💡 Get this from your n8n workflow's webhook node (e.g., ngrok URL)
             </p>
+          </div>
+          
+          {/* Privacy Notice */}
+          <div style={{
+            marginTop: '20px',
+            padding: '16px 20px',
+            background: 'rgba(102, 126, 234, 0.08)',
+            borderRadius: '12px',
+            border: '1px solid rgba(102, 126, 234, 0.2)',
+          }}>
+            <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '8px', color: '#667eea', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              🔐 How Your Privacy is Protected
+            </h4>
+            <ul style={{ fontSize: '13px', lineHeight: '1.8', color: '#666', margin: 0, paddingLeft: '20px' }}>
+              <li>✅ Webhook URL stored in <strong>your browser only</strong> (localStorage)</li>
+              <li>✅ <strong>Never sent to our servers</strong></li>
+              <li>✅ Requests go <strong>directly from your browser to YOUR n8n</strong></li>
+              <li>✅ Your data <strong>never touches our infrastructure</strong></li>
+              <li>✅ Complete control over your personal information</li>
+            </ul>
           </div>
         </div>
         

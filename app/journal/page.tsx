@@ -244,7 +244,7 @@ export default function JournalPage() {
                   color: '#8b8b8b',
                   margin: 0,
                 }}>
-                  Log your daily thoughts, feelings, and events.
+                  Log your daily thoughts, feelings and events.
                 </p>
               </div>
 
@@ -428,6 +428,7 @@ export default function JournalPage() {
 
             {/* Journal Writing Card */}
             <div style={{
+              animation: 'fadeIn 0.5s ease-out 0.2s backwards',
               background: 'rgba(255, 255, 255, 0.1)',
               backdropFilter: 'blur(20px)',
               borderRadius: '20px',

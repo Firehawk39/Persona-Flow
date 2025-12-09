@@ -1,0 +1,268 @@
+{
+  "name": "PersonaFlow - Personal (Advanced RAG)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "personal-chat",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [250, 500],
+      "webhookId": "personal-chat"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract data from webhook\nconst body = $input.item.json.body;\nconst message = body.message || '';\nconst history = body.history || [];\nconst context = body.context || {};\nconst sessionId = body.sessionId || context.sessionId;\nconst source = body.source || context.page || 'chat';\nconst userId = body.userId || context.userId || 'default-user';\n\nreturn {\n  json: {\n    message,\n    history,\n    context,\n    sessionId,\n    source,\n    userId,\n    mode: 'personal',\n    timestamp: new Date().toISOString()\n  }\n};"
+      },
+      "name": "Extract Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 500]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT content, mood, created_at, tags FROM journal_entries WHERE user_id = '{{ $json.userId }}' ORDER BY created_at DESC LIMIT 5",
+        "options": {}
+      },
+      "name": "Fetch Recent Journal Entries",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [650, 350],
+      "credentials": {
+        "supabaseApi": {
+          "id": "1",
+          "name": "Supabase Personal"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT name, category, streak, last_completed FROM habits WHERE user_id = '{{ $json.userId }}' AND streak > 0 ORDER BY streak DESC LIMIT 5",
+        "options": {}
+      },
+      "name": "Fetch Active Habits",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [650, 500]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT session_id, created_at, mood, summary FROM therapy_sessions WHERE user_id = '{{ $json.userId }}' ORDER BY created_at DESC LIMIT 3",
+        "options": {}
+      },
+      "name": "Fetch Recent Therapy Sessions",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [650, 650]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Combine all context\nconst extractedData = $node['Extract Data'].json;\nconst message = extractedData.message;\nconst history = extractedData.history;\nconst source = extractedData.source;\nconst userId = extractedData.userId;\n\n// Get data from Supabase nodes\nconst journalEntries = $node['Fetch Recent Journal Entries'].json || [];\nconst habits = $node['Fetch Active Habits'].json || [];\nconst therapySessions = $node['Fetch Recent Therapy Sessions'].json || [];\n\n// Build context-aware system prompt based on source\nlet systemPrompt = '';\n\nif (source === 'therapy') {\n  systemPrompt = `You are a deeply empathetic AI therapist for PersonaFlow, with full access to the user's personal journey.\n\nYou have access to:\n- Recent journal entries (moods, reflections, patterns)\n- Active habit tracking data (streaks, consistency)\n- Previous therapy session summaries\n- Full conversation history\n\nYour role:\n- Provide therapeutic, context-aware responses\n- Reference past journal entries and therapy sessions when relevant\n- Acknowledge habit progress and emotional patterns\n- Use reflective listening and Socratic questioning\n- Help users gain deeper self-awareness\n- Be warm, professional, and genuinely therapeutic\n\nTone: Gentle, insightful, therapeutically engaged\nStyle: Reflective, validating, growth-oriented`;\n} else {\n  systemPrompt = `You are a compassionate AI companion for PersonaFlow, deeply integrated with the user's personal growth journey.\n\nYou have access to:\n- Recent journal entries (moods and reflections)\n- Active habit tracking data\n- Previous therapy insights\n- Conversation history\n\nYour role:\n- Provide deeply personalized, context-aware responses\n- Reference past journal entries when relevant\n- Acknowledge habit progress and encourage consistency\n- Offer insights based on patterns you observe\n- Be warm, understanding, and genuinely helpful\n\nTone: Warm, insightful, personally engaged\nStyle: Conversational but thoughtful, like a trusted friend who knows you well`;\n}\n\n// Add journal context if available\nif (journalEntries.length > 0) {\n  systemPrompt += `\\n\\nRecent Journal Insights:\\n`;\n  journalEntries.forEach(entry => {\n    const date = new Date(entry.created_at).toLocaleDateString();\n    const preview = entry.content.substring(0, 150);\n    systemPrompt += `- ${date}: Mood was ${entry.mood}. \"${preview}...\"\\n`;\n  });\n}\n\n// Add habit context if available\nif (habits.length > 0) {\n  systemPrompt += `\\n\\nActive Habits & Progress:\\n`;\n  habits.forEach(habit => {\n    systemPrompt += `- ${habit.name} (${habit.category}): ${habit.streak} day streak (last: ${new Date(habit.last_completed).toLocaleDateString()})\\n`;\n  });\n}\n\n// Add therapy context if available\nif (therapySessions.length > 0) {\n  systemPrompt += `\\n\\nRecent Therapy Insights:\\n`;\n  therapySessions.forEach(session => {\n    const date = new Date(session.created_at).toLocaleDateString();\n    systemPrompt += `- ${date} (${session.mood}): ${session.summary}\\n`;\n  });\n}\n\n// Format conversation for AI\nconst messages = [\n  { role: 'system', content: systemPrompt },\n  ...history.map(msg => ({\n    role: msg.role === 'user' ? 'user' : 'assistant',\n    content: msg.content\n  })),\n  { role: 'user', content: message }\n];\n\nreturn {\n  json: {\n    messages,\n    systemPrompt,\n    sessionId: extractedData.sessionId,\n    userId: userId,\n    source: source,\n    contextSummary: {\n      journalCount: journalEntries.length,\n      habitCount: habits.length,\n      therapyCount: therapySessions.length\n    }\n  }\n};"
+      },
+      "name": "Build Context-Aware Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [850, 500]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:11434/api/chat",
+        "sendBody": true,
+        "contentType": "json",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "llama2"
+            },
+            {
+              "name": "messages",
+              "value": "={{ $json.messages }}"
+            },
+            {
+              "name": "stream",
+              "value": false
+            },
+            {
+              "name": "options",
+              "value": {
+                "temperature": 0.8,
+                "num_predict": 400,
+                "top_p": 0.9
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Ollama Chat (Advanced)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1050, 500]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract Ollama response\nconst ollamaResponse = $input.item.json.message?.content || \"I apologize, but I'm having trouble responding right now. Please try again.\";\nconst contextData = $node['Build Context-Aware Prompt'].json;\n\n// Format response for PersonaFlow\nreturn {\n  json: {\n    text: ollamaResponse,\n    response: ollamaResponse,\n    output: ollamaResponse,\n    message: ollamaResponse,\n    timestamp: new Date().toISOString(),\n    model: 'llama2',\n    mode: 'personal',\n    sessionId: contextData.sessionId,\n    userId: contextData.userId,\n    source: contextData.source,\n    contextUsed: contextData.contextSummary\n  }\n};"
+      },
+      "name": "Format Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1250, 500]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "table": "chat_messages",
+        "data": "={{ { session_id: $json.sessionId, user_id: $json.userId, role: 'assistant', content: $json.text, source: $json.source, created_at: $json.timestamp } }}",
+        "options": {}
+      },
+      "name": "Save AI Response to DB",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1450, 500],
+      "credentials": {
+        "supabaseApi": {
+          "id": "1",
+          "name": "Supabase Personal"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $node['Format Response'].json }}"
+      },
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1650, 500]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extract Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Data": {
+      "main": [
+        [
+          {
+            "node": "Fetch Recent Journal Entries",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch Active Habits",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch Recent Therapy Sessions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Recent Journal Entries": {
+      "main": [
+        [
+          {
+            "node": "Build Context-Aware Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Active Habits": {
+      "main": [
+        [
+          {
+            "node": "Build Context-Aware Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Recent Therapy Sessions": {
+      "main": [
+        [
+          {
+            "node": "Build Context-Aware Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Context-Aware Prompt": {
+      "main": [
+        [
+          {
+            "node": "Ollama Chat (Advanced)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat (Advanced)": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Response": {
+      "main": [
+        [
+          {
+            "node": "Save AI Response to DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save AI Response to DB": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": ["personal", "advanced", "supabase", "rag", "context-aware"],
+  "triggerCount": 1,
+  "updatedAt": "2025-12-09T00:00:00.000Z",
+  "versionId": "2"
+}

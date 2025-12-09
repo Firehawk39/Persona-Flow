@@ -4,7 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:demo": "copy env.demo .env.local && next dev",
+    "dev:personal": "copy env.personal .env.local && next dev",
     "build": "next build",
+    "build:demo": "copy env.demo .env.local && next build",
+    "build:personal": "copy env.personal .env.local && next build",
     "start": "next start",
     "lint": "eslint"
   },

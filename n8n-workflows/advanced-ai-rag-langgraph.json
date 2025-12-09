@@ -1,0 +1,450 @@
+{
+  "name": "PersonaFlow - Advanced AI (RAG + LangGraph + Vector DB)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "advanced-ai-chat",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-advanced",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [250, 600],
+      "webhookId": "advanced-ai-chat"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract and enrich incoming data\nconst body = $input.item.json.body;\nconst message = body.message || '';\nconst history = body.history || [];\nconst context = body.context || {};\nconst userId = body.userId || context.userId || 'default-user';\nconst sessionId = body.sessionId || context.sessionId || 'session-' + Date.now();\nconst source = body.source || context.page || 'chat';\n\n// Analyze message intent\nconst intent = detectIntent(message);\n\nfunction detectIntent(msg) {\n  const lower = msg.toLowerCase();\n  if (lower.includes('journal') || lower.includes('wrote') || lower.includes('feeling')) return 'journal_query';\n  if (lower.includes('habit') || lower.includes('streak') || lower.includes('progress')) return 'habit_query';\n  if (lower.includes('therapy') || lower.includes('anxious') || lower.includes('stressed')) return 'therapy_query';\n  if (lower.includes('insight') || lower.includes('pattern') || lower.includes('trend')) return 'analytics_query';\n  return 'general_chat';\n}\n\nreturn {\n  json: {\n    message,\n    history,\n    context,\n    userId,\n    sessionId,\n    source,\n    intent,\n    timestamp: new Date().toISOString(),\n    mode: 'advanced'\n  }\n};"
+      },
+      "id": "extract-enrich",
+      "name": "Extract & Enrich Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 600]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id, content, mood, tags, created_at, embedding FROM journal_entries WHERE user_id = '{{ $json.userId }}' ORDER BY created_at DESC LIMIT 10",
+        "options": {}
+      },
+      "id": "fetch-journal",
+      "name": "Fetch Journal Entries",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [650, 400],
+      "credentials": {
+        "supabaseApi": {
+          "id": "1",
+          "name": "Supabase Advanced"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id, name, category, streak, last_completed, notes FROM habits WHERE user_id = '{{ $json.userId }}' ORDER BY streak DESC LIMIT 10",
+        "options": {}
+      },
+      "id": "fetch-habits",
+      "name": "Fetch Habits",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [650, 600]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id, created_at, mood, summary, insights, session_type FROM therapy_sessions WHERE user_id = '{{ $json.userId }}' ORDER BY created_at DESC LIMIT 5",
+        "options": {}
+      },
+      "id": "fetch-therapy",
+      "name": "Fetch Therapy Sessions",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [650, 800]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message }}"
+      },
+      "id": "embeddings-query",
+      "name": "Generate Query Embedding",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [850, 400],
+      "credentials": {
+        "ollamaApi": {
+          "id": "1",
+          "name": "Ollama Local"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT content, mood, created_at, tags, (embedding <=> '{{ $json.embedding }}') AS similarity FROM journal_entries WHERE user_id = '{{ $node[\"Extract & Enrich Data\"].json.userId }}' ORDER BY similarity LIMIT 5",
+        "options": {}
+      },
+      "id": "vector-search",
+      "name": "Vector Similarity Search",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1050, 400],
+      "credentials": {
+        "supabaseApi": {
+          "id": "1",
+          "name": "Supabase Advanced"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Aggregate all context sources\nconst extractedData = $node['Extract & Enrich Data'].json;\nconst journalEntries = $node['Fetch Journal Entries'].json || [];\nconst habits = $node['Fetch Habits'].json || [];\nconst therapySessions = $node['Fetch Therapy Sessions'].json || [];\nconst similarEntries = $node['Vector Similarity Search'].json || [];\n\n// Build comprehensive context\nconst context = {\n  user: {\n    id: extractedData.userId,\n    sessionId: extractedData.sessionId,\n    intent: extractedData.intent,\n    source: extractedData.source\n  },\n  journal: {\n    recent: journalEntries.slice(0, 5).map(e => ({\n      date: new Date(e.created_at).toLocaleDateString(),\n      mood: e.mood,\n      preview: e.content.substring(0, 150),\n      tags: e.tags\n    })),\n    similar: similarEntries.map(e => ({\n      similarity: (1 - e.similarity).toFixed(2),\n      mood: e.mood,\n      preview: e.content.substring(0, 100),\n      date: new Date(e.created_at).toLocaleDateString()\n    }))\n  },\n  habits: habits.map(h => ({\n    name: h.name,\n    category: h.category,\n    streak: h.streak,\n    lastCompleted: new Date(h.last_completed).toLocaleDateString(),\n    notes: h.notes\n  })),\n  therapy: therapySessions.map(t => ({\n    date: new Date(t.created_at).toLocaleDateString(),\n    mood: t.mood,\n    type: t.session_type,\n    summary: t.summary,\n    insights: t.insights\n  }))\n};\n\n// Calculate user insights\nconst insights = {\n  totalJournalEntries: journalEntries.length,\n  activeHabits: habits.filter(h => h.streak > 0).length,\n  longestStreak: Math.max(...habits.map(h => h.streak), 0),\n  recentMoods: journalEntries.slice(0, 5).map(e => e.mood),\n  therapySessionCount: therapySessions.length\n};\n\nreturn {\n  json: {\n    message: extractedData.message,\n    history: extractedData.history,\n    context: context,\n    insights: insights,\n    timestamp: extractedData.timestamp\n  }\n};"
+      },
+      "id": "aggregate-context",
+      "name": "Aggregate RAG Context",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1250, 600]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "langgraph-agent",
+      "name": "LangGraph Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [1450, 600],
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "model": "llama3.1:latest",
+        "options": {
+          "temperature": 0.8,
+          "maxTokens": 500,
+          "topP": 0.9,
+          "frequencyPenalty": 0.3,
+          "presencePenalty": 0.3
+        }
+      },
+      "id": "ollama-llama3",
+      "name": "Ollama LLaMA 3.1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [1450, 780],
+      "credentials": {
+        "ollamaApi": {
+          "id": "1",
+          "name": "Ollama Local"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Extract & Enrich Data').item.json.sessionId }}",
+        "contextWindowLength": 20
+      },
+      "id": "conversation-memory",
+      "name": "Conversation Summary Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [1450, 920]
+    },
+    {
+      "parameters": {
+        "name": "journal_analyzer",
+        "description": "Analyzes journal entries to identify patterns, mood trends, and emotional insights",
+        "jsCode": "const context = $input.item.json.context;\nconst journal = context.journal;\n\n// Analyze mood patterns\nconst moodCounts = {};\njournal.recent.forEach(entry => {\n  moodCounts[entry.mood] = (moodCounts[entry.mood] || 0) + 1;\n});\n\nconst dominantMood = Object.keys(moodCounts).reduce((a, b) => \n  moodCounts[a] > moodCounts[b] ? a : b\n);\n\nconst analysis = {\n  dominantMood,\n  moodDistribution: moodCounts,\n  recentTrend: journal.recent.slice(0, 3).map(e => e.mood).join(' → '),\n  totalEntries: journal.recent.length,\n  commonThemes: extractThemes(journal.recent)\n};\n\nfunction extractThemes(entries) {\n  const themes = [];\n  entries.forEach(e => {\n    if (e.tags && e.tags.length > 0) {\n      themes.push(...e.tags);\n    }\n  });\n  return [...new Set(themes)].slice(0, 5);\n}\n\nreturn { json: { analysis } };"
+      },
+      "id": "tool-journal",
+      "name": "Tool: Journal Analyzer",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1,
+      "position": [1250, 780]
+    },
+    {
+      "parameters": {
+        "name": "habit_tracker",
+        "description": "Provides insights on habit streaks, progress, and recommendations",
+        "jsCode": "const context = $input.item.json.context;\nconst habits = context.habits;\n\nconst analysis = {\n  totalHabits: habits.length,\n  activeHabits: habits.filter(h => h.streak > 0).length,\n  longestStreak: Math.max(...habits.map(h => h.streak), 0),\n  topHabits: habits.slice(0, 3).map(h => ({\n    name: h.name,\n    streak: h.streak,\n    category: h.category\n  })),\n  categories: [...new Set(habits.map(h => h.category))],\n  needsAttention: habits.filter(h => h.streak === 0).map(h => h.name)\n};\n\nreturn { json: { analysis } };"
+      },
+      "id": "tool-habits",
+      "name": "Tool: Habit Tracker",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1,
+      "position": [1250, 920]
+    },
+    {
+      "parameters": {
+        "name": "therapy_insights",
+        "description": "Retrieves insights from past therapy sessions and identifies recurring themes",
+        "jsCode": "const context = $input.item.json.context;\nconst therapy = context.therapy;\n\nconst analysis = {\n  totalSessions: therapy.length,\n  recentMoods: therapy.map(t => t.mood),\n  keyInsights: therapy.flatMap(t => t.insights || []).slice(0, 5),\n  sessionTypes: [...new Set(therapy.map(t => t.type))],\n  recentSummaries: therapy.slice(0, 2).map(t => ({\n    date: t.date,\n    summary: t.summary\n  }))\n};\n\nreturn { json: { analysis } };"
+      },
+      "id": "tool-therapy",
+      "name": "Tool: Therapy Insights",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1,
+      "position": [1250, 1060]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract AI response\nconst aiOutput = $input.item.json.output || $input.item.json.text || \"I'm here to support your personal growth journey.\";\nconst contextData = $node['Aggregate RAG Context'].json;\nconst extractedData = $node['Extract & Enrich Data'].json;\n\n// Clean and format response\nconst cleanResponse = aiOutput.trim();\n\n// Prepare response with metadata\nconst response = {\n  text: cleanResponse,\n  response: cleanResponse,\n  output: cleanResponse,\n  message: cleanResponse,\n  timestamp: new Date().toISOString(),\n  model: 'llama3.1',\n  mode: 'advanced',\n  sessionId: extractedData.sessionId,\n  userId: extractedData.userId,\n  source: extractedData.source,\n  intent: extractedData.intent,\n  contextUsed: {\n    journalEntries: contextData.context.journal.recent.length,\n    similarEntries: contextData.context.journal.similar.length,\n    habits: contextData.context.habits.length,\n    therapySessions: contextData.context.therapy.length\n  },\n  insights: contextData.insights\n};\n\nreturn { json: response };"
+      },
+      "id": "format-response",
+      "name": "Format AI Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1650, 600]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "table": "chat_messages",
+        "data": "={{ { session_id: $json.sessionId, user_id: $json.userId, role: 'assistant', content: $json.text, source: $json.source, metadata: JSON.stringify($json.contextUsed), created_at: $json.timestamp } }}",
+        "options": {}
+      },
+      "id": "save-message",
+      "name": "Save to Database",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1850, 600],
+      "credentials": {
+        "supabaseApi": {
+          "id": "1",
+          "name": "Supabase Advanced"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Generate embedding for the AI response for future similarity search\nconst response = $node['Format AI Response'].json;\nconst message = response.text;\n\n// This will be used to create embeddings for the response\nreturn {\n  json: {\n    content: message,\n    userId: response.userId,\n    sessionId: response.sessionId,\n    timestamp: response.timestamp\n  }\n};"
+      },
+      "id": "prepare-embedding",
+      "name": "Prepare for Embedding",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1850, 780]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $node['Format AI Response'].json }}"
+      },
+      "id": "respond-webhook",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [2050, 600]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extract & Enrich Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract & Enrich Data": {
+      "main": [
+        [
+          {
+            "node": "Fetch Journal Entries",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch Habits",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch Therapy Sessions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Journal Entries": {
+      "main": [
+        [
+          {
+            "node": "Generate Query Embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Query Embedding": {
+      "main": [
+        [
+          {
+            "node": "Vector Similarity Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Similarity Search": {
+      "main": [
+        [
+          {
+            "node": "Aggregate RAG Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Habits": {
+      "main": [
+        [
+          {
+            "node": "Aggregate RAG Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Therapy Sessions": {
+      "main": [
+        [
+          {
+            "node": "Aggregate RAG Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate RAG Context": {
+      "main": [
+        [
+          {
+            "node": "LangGraph Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LangGraph Agent": {
+      "main": [
+        [
+          {
+            "node": "Format AI Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama LLaMA 3.1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "LangGraph Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Conversation Summary Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "LangGraph Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tool: Journal Analyzer": {
+      "ai_tool": [
+        [
+          {
+            "node": "LangGraph Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tool: Habit Tracker": {
+      "ai_tool": [
+        [
+          {
+            "node": "LangGraph Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tool: Therapy Insights": {
+      "ai_tool": [
+        [
+          {
+            "node": "LangGraph Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format AI Response": {
+      "main": [
+        [
+          {
+            "node": "Save to Database",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Prepare for Embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Database": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": ["advanced", "rag", "langgraph", "vector-db", "ai-tools"],
+  "triggerCount": 1,
+  "updatedAt": "2025-12-09T00:00:00.000Z",
+  "versionId": "1"
+}

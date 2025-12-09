@@ -5,6 +5,7 @@ import Image from "next/image";
 import BodyClassUpdater from "../../components/BodyClassUpdater";
 import { useToast } from "@/components/ui";
 import Header from "@/components/Header";
+import { sendChatMessage } from "@/lib/api-client";
 
 interface Message {
   id: string;
@@ -74,26 +75,48 @@ export default function ChatPage() {
 
   // Conversation history
   const [conversationHistory, setConversationHistory] = useState<Conversation[]>([]);
+  const [showDemoDisclaimer, setShowDemoDisclaimer] = useState(false);
 
   useEffect(() => {
     fetchHistory();
   }, []);
 
   const fetchHistory = async () => {
+    // In demo mode, use localStorage
     try {
-      const response = await fetch('/api/chat/sessions');
-      if (response.ok) {
-        const data = await response.json();
-        if (data.sessions && data.sessions.length > 0) {
-          setConversationHistory(data.sessions);
-          return;
-        }
+      const saved = localStorage.getItem('chat_history');
+      if (saved) {
+        const history = JSON.parse(saved);
+        setConversationHistory(history.slice(0, 5)); // Keep only last 5
+        return;
       }
     } catch (error) {
-      console.error('Failed to fetch history:', error);
+      console.error('Failed to load history from localStorage:', error);
     }
     // Fallback to mock data
     setConversationHistory(MOCK_HISTORY);
+  };
+
+  const saveToHistory = (sessionId: string, firstMessage: string) => {
+    try {
+      const saved = localStorage.getItem('chat_history');
+      const history: Conversation[] = saved ? JSON.parse(saved) : [];
+      
+      const newConversation: Conversation = {
+        id: sessionId,
+        created_at: new Date().toISOString(),
+        title: firstMessage.substring(0, 50) + (firstMessage.length > 50 ? '...' : ''),
+        preview: firstMessage.substring(0, 100) + (firstMessage.length > 100 ? '...' : ''),
+        messageCount: 2
+      };
+      
+      // Add to beginning and keep only last 5
+      const updated = [newConversation, ...history].slice(0, 5);
+      localStorage.setItem('chat_history', JSON.stringify(updated));
+      setConversationHistory(updated);
+    } catch (error) {
+      console.error('Failed to save to localStorage:', error);
+    }
   };
 
   const scrollToBottom = () => {
@@ -127,53 +150,34 @@ export default function ChatPage() {
 
   // View full conversation
   const handleViewConversation = async (conversation: Conversation) => {
-    try {
-      setIsLoading(true);
-      const response = await fetch(`/api/chat/sessions/${conversation.id}`);
-      if (response.ok) {
-        const data = await response.json();
-        if (data.messages && data.messages.length > 0) {
-          setMessages(data.messages.map((m: any) => ({
-            id: m.id,
-            type: m.role === 'user' ? 'user' : 'ai',
-            text: m.content,
-            timestamp: new Date(m.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
-          })));
-          setCurrentSessionId(conversation.id);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-          return;
-        }
-      }
-    } catch (error) {
-      console.error('Failed to load conversation:', error);
-      showToast("Failed to load conversation.", "error");
-    } finally {
-      setIsLoading(false);
-    }
-
-    // Fallback to mock messages
-    if (MOCK_MESSAGES[conversation.id]) {
-      setMessages(MOCK_MESSAGES[conversation.id]);
-      setCurrentSessionId(conversation.id);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    // In demo mode, show disclaimer instead of loading
+    setShowDemoDisclaimer(true);
+    setTimeout(() => setShowDemoDisclaimer(false), 4000); // Hide after 4 seconds
   };
 
-  // Delete conversation
-  const handleDeleteConversation = async (conversationId: string, event: React.MouseEvent) => {
+  // Delete conversation from localStorage
+  const handleDeleteConversation = (conversationId: string, event: React.MouseEvent) => {
     event.stopPropagation();
+    
     try {
-      const response = await fetch(`/api/chat/sessions?id=${conversationId}`, { method: 'DELETE' });
-      if (response.ok) {
-        setConversationHistory(prev => prev.filter(conv => conv.id !== conversationId));
+      const saved = localStorage.getItem('chat_history');
+      if (saved) {
+        const history: Conversation[] = JSON.parse(saved);
+        const updated = history.filter(conv => conv.id !== conversationId);
+        localStorage.setItem('chat_history', JSON.stringify(updated));
+        setConversationHistory(updated);
+        
+        // Clear current chat if deleting active conversation
         if (currentSessionId === conversationId) {
           setMessages([]);
           setCurrentSessionId(null);
         }
+        
+        showToast("Conversation deleted", "success");
       }
     } catch (error) {
       console.error('Failed to delete conversation:', error);
-      showToast("Failed to delete conversation.", "error");
+      showToast("Failed to delete conversation", "error");
     }
   };
 
@@ -207,44 +211,40 @@ export default function ChatPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: newMessage.text,
-          history: messages.map(m => ({ role: m.type === 'user' ? 'user' : 'assistant', content: m.text })),
-          sessionId: currentSessionId,
-          context: { page: 'chat' }
-        }),
-      });
-
-      if (!response.ok) throw new Error('Failed to get response');
-
-      const data = await response.json();
-      
-      if (data.sessionId) {
-        setCurrentSessionId(data.sessionId);
-      }
+      // Direct client-side call to n8n webhook
+      const data = await sendChatMessage(
+        newMessage.text,
+        messages.map(m => ({ role: m.type === 'user' ? 'user' : 'assistant', content: m.text })),
+        { page: 'chat', sessionId: currentSessionId }
+      );
 
       const aiResponse: Message = {
         id: 'ai-' + Date.now(),
         type: 'ai',
-        text: data.response || "I'm having trouble connecting to my brain right now.",
+        text: data.text || data.response || data.output || "I'm having trouble connecting right now.",
         timestamp: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
       };
       
       setMessages(prev => [...prev, aiResponse]);
+      
+      // Save to history if it's a new conversation
+      if (messages.length === 0) {
+        const sessionId = 'session-' + Date.now();
+        setCurrentSessionId(sessionId);
+        saveToHistory(sessionId, newMessage.text);
+      }
+      
       fetchHistory(); // Update history list in background
     } catch (error) {
       console.error('Chat Error:', error);
       const errorResponse: Message = {
         id: 'error-' + Date.now(),
         type: 'ai',
-        text: "I'm currently offline. Please check your connection or settings.",
+        text: "I'm currently offline. Please check your connection or n8n webhook configuration.",
         timestamp: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
       };
       setMessages(prev => [...prev, errorResponse]);
-      showToast("Failed to send message. Please try again.", "error");
+      showToast("Failed to send message. Check console for details.", "error");
     } finally {
       setIsLoading(false);
     }
@@ -570,6 +570,29 @@ export default function ChatPage() {
                 Conversation History
               </h3>
             </div>
+
+            {/* Demo Disclaimer */}
+            {showDemoDisclaimer && (
+              <div style={{
+                marginBottom: '20px',
+                padding: '14px 18px',
+                background: 'rgba(249, 115, 22, 0.1)',
+                border: '1px solid rgba(249, 115, 22, 0.3)',
+                borderRadius: '12px',
+                fontSize: '13px',
+                color: '#ea580c',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                animation: 'fadeIn 0.3s ease-out',
+              }}>
+                <span style={{ fontSize: '16px' }}>ℹ️</span>
+                <span>
+                  <strong>Demo Mode:</strong> Loading previous conversations is disabled in the demo version. 
+                  In the personal version, you can view and continue past conversations.
+                </span>
+              </div>
+            )}
 
             {/* Conversation List */}
             <div style={{

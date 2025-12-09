@@ -1,0 +1,168 @@
+{
+  "name": "PersonaFlow - Demo (AI Agent)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "demo-chat",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-demo",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "demo-chat"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract data from webhook\nconst body = $input.item.json.body;\nconst message = body.message || '';\nconst history = body.history || [];\nconst context = body.context || {};\nconst source = body.source || 'chat';\n\n// Format conversation history for AI Agent\nconst chatHistory = history.map(msg => ({\n  role: msg.role === 'user' ? 'user' : 'assistant',\n  content: msg.content\n}));\n\nreturn {\n  json: {\n    message,\n    chatHistory,\n    source,\n    context,\n    mode: 'demo'\n  }\n};"
+      },
+      "id": "extract-data",
+      "name": "Extract & Format Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.message }}",
+        "options": {
+          "systemMessage": "You are a compassionate AI companion for PersonaFlow, a personal growth and mental wellness app.\n\nYour role:\n- Provide warm, supportive responses\n- Help users reflect on their thoughts and feelings\n- Offer gentle guidance for personal growth\n- Keep responses concise and meaningful (2-3 sentences)\n- Be encouraging and non-judgmental\n- Use a conversational, friendly tone\n\nContext: This is a demo version showcasing the app's capabilities. Help users explore mindfulness, personal growth, and emotional wellness."
+        }
+      },
+      "id": "ai-agent",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [650, 300],
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "model": "samantha:mistral",
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 200
+        }
+      },
+      "id": "ollama-chat-model",
+      "name": "Ollama Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [650, 480],
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Extract & Format Data').item.json.context.sessionId || 'demo-session' }}"
+      },
+      "id": "window-buffer-memory",
+      "name": "Window Buffer Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.2,
+      "position": [650, 620],
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract AI response\nconst aiOutput = $input.item.json.output || $input.item.json.text || \"I'm here to support you on your personal growth journey. How can I help you today?\";\n\n// Clean up the response\nconst cleanResponse = aiOutput.trim();\n\n// Format response for PersonaFlow\nreturn {\n  json: {\n    text: cleanResponse,\n    response: cleanResponse,\n    output: cleanResponse,\n    message: cleanResponse,\n    timestamp: new Date().toISOString(),\n    model: 'samantha:mistral',\n    mode: 'demo',\n    source: 'ai-agent'\n  }\n};"
+      },
+      "id": "format-response",
+      "name": "Format Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      },
+      "id": "respond-webhook",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extract & Format Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract & Format Data": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Response": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": ["demo", "personaflow", "ai-agent"],
+  "triggerCount": 1,
+  "updatedAt": "2024-12-07T00:00:00.000Z",
+  "versionId": "2"
+}
