@@ -10,6 +10,8 @@ export default function Therapy() {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isSessionActive, setIsSessionActive] = useState(false);
   const [message, setMessage] = useState("");
+  const [chatHistory, setChatHistory] = useState<Array<{ role: 'user' | 'assistant', content: string }>>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const options = [
     {
@@ -62,7 +64,77 @@ export default function Therapy() {
   const handleStartSession = () => {
     if (selectedOption) {
       setIsSessionActive(true);
-      console.log("Starting session with:", selectedOption);
+      setChatHistory([{
+        role: 'assistant',
+        content: "Let's talk about what's on your mind."
+      }]);
+      // Scroll to bottom of chat
+      setTimeout(() => {
+        const chatContainer = document.getElementById('chat-container');
+        if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
+      }, 100);
+    }
+  };
+
+  const handleSendMessage = async () => {
+    if (!message.trim() || isLoading) return;
+
+    const userMessage = message.trim();
+    setMessage(""); // Clear input immediately
+    
+    // Add user message to history
+    const updatedHistory = [
+      ...chatHistory,
+      { role: 'user' as const, content: userMessage }
+    ];
+    setChatHistory(updatedHistory);
+    setIsLoading(true);
+
+    // Scroll to bottom
+    setTimeout(() => {
+      const chatContainer = document.getElementById('chat-container');
+      if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
+    }, 100);
+
+    try {
+      const response = await sendChatMessage(
+        userMessage,
+        updatedHistory,
+        { 
+          intent: selectedOption,
+          page: 'therapy' 
+        }
+      );
+
+      // Add AI response
+      const aiResponse = response.response || response.output || response.text || "I'm listening...";
+      
+      setChatHistory(prev => [
+        ...prev,
+        { role: 'assistant', content: aiResponse }
+      ]);
+      
+    } catch (error) {
+      console.error("Failed to send message:", error);
+      // Add error message
+      setChatHistory(prev => [
+        ...prev,
+        { role: 'assistant', content: "I'm having trouble connecting right now. Please try again." }
+      ]);
+    } finally {
+      setIsLoading(false);
+      // Scroll to bottom
+      setTimeout(() => {
+        const chatContainer = document.getElementById('chat-container');
+        if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
+      }, 100);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
     }
   };
 
@@ -318,15 +390,18 @@ export default function Therapy() {
                 </button>
               </div>
 
-              {/* Chat Content */}
-              <div style={{
-                flex: 1,
-                padding: '30px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '20px',
-                overflowY: 'auto',
-              }}>
+              <div 
+                id="chat-container"
+                style={{
+                  flex: 1,
+                  padding: '30px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '20px',
+                  overflowY: 'auto',
+                  scrollBehavior: 'smooth'
+                }}
+              >
                 {/* Session Info */}
                 <div style={{
                   textAlign: 'center',
@@ -338,49 +413,90 @@ export default function Therapy() {
                     fontStyle: 'italic',
                     margin: 0,
                   }}>
-                    Session Focus: {options.find(o => o.id === selectedOption)?.title} | Initial Mood: Neutral | User Intention: {options.find(o => o.id === selectedOption)?.title}
+                    Session Focus: {options.find(o => o.id === selectedOption)?.title}
                   </p>
                 </div>
 
-                {/* Initial Bot Message */}
-                <div style={{
-                  display: 'flex',
-                  gap: '16px',
-                  alignItems: 'flex-start',
-                }}>
-                  <div style={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '50%',
-                    background: 'rgba(255, 255, 255, 0.5)',
+                {chatHistory.map((msg, index) => (
+                  <div key={index} style={{
                     display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '18px',
-                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    gap: '16px',
+                    alignItems: 'flex-start',
+                    justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start',
                   }}>
-                    🤖
-                  </div>
-                  <div style={{
-                    background: 'rgba(255, 255, 255, 0.4)',
-                    backdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255, 255, 255, 0.3)',
-                    borderRadius: '12px',
-                    borderTopLeftRadius: '4px',
-                    padding: '16px 20px',
-                    maxWidth: '70%',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                  }}>
-                    <p style={{
-                      margin: 0,
-                      fontSize: '15px',
-                      color: '#4a4a4a',
-                      lineHeight: '1.5',
+                    {msg.role === 'assistant' && (
+                      <div style={{
+                        width: '36px',
+                        height: '36px',
+                        borderRadius: '50%',
+                        background: 'rgba(255, 255, 255, 0.5)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '18px',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        flexShrink: 0,
+                      }}>
+                        🤖
+                      </div>
+                    )}
+                    <div style={{
+                      background: msg.role === 'user' 
+                        ? 'linear-gradient(135deg, #ff8c42 0%, #ff6b35 100%)' 
+                        : 'rgba(255, 255, 255, 0.4)',
+                      backdropFilter: 'blur(10px)',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      borderRadius: '12px',
+                      borderTopLeftRadius: msg.role === 'user' ? '12px' : '4px',
+                      borderTopRightRadius: msg.role === 'user' ? '4px' : '12px',
+                      padding: '16px 20px',
+                      maxWidth: '70%',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                      color: msg.role === 'user' ? 'white' : '#4a4a4a',
                     }}>
-                      Let's talk about what's on your mind.
-                    </p>
+                      <p style={{
+                        margin: 0,
+                        fontSize: '15px',
+                        lineHeight: '1.5',
+                        whiteSpace: 'pre-wrap',
+                      }}>
+                        {msg.content}
+                      </p>
+                    </div>
                   </div>
-                </div>
+                ))}
+
+                {isLoading && (
+                  <div style={{
+                    display: 'flex',
+                    gap: '16px',
+                    alignItems: 'flex-start',
+                  }}>
+                    <div style={{
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '50%',
+                      background: 'rgba(255, 255, 255, 0.5)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '18px',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                    }}>
+                      🤖
+                    </div>
+                    <div style={{
+                      background: 'rgba(255, 255, 255, 0.4)',
+                      padding: '16px 20px',
+                      borderRadius: '12px',
+                      borderTopLeftRadius: '4px',
+                    }}>
+                      <span className="typing-indicator" style={{ fontSize: '14px', color: '#666' }}>
+                        Thinking...
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Chat Input Area */}
@@ -398,6 +514,8 @@ export default function Therapy() {
                     type="text"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    disabled={isLoading}
                     placeholder="Respond to your therapist..."
                     style={{
                       flex: 1,
@@ -409,25 +527,31 @@ export default function Therapy() {
                       color: '#4a4a4a',
                       outline: 'none',
                       backdropFilter: 'blur(5px)',
+                      opacity: isLoading ? 0.7 : 1,
                     }}
                   />
                   <button
+                    onClick={handleSendMessage}
+                    disabled={isLoading || !message.trim()}
                     style={{
                       width: '54px',
                       height: '54px',
                       borderRadius: '12px',
-                      background: 'linear-gradient(135deg, #ff8c42 0%, #ff6b35 100%)',
+                      background: isLoading || !message.trim() 
+                        ? '#cccccc' 
+                        : 'linear-gradient(135deg, #ff8c42 0%, #ff6b35 100%)',
                       border: 'none',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      cursor: 'pointer',
+                      cursor: isLoading || !message.trim() ? 'not-allowed' : 'pointer',
                       color: '#ffffff',
                       fontSize: '20px',
-                      boxShadow: '0 4px 12px rgba(255, 107, 53, 0.3)',
+                      boxShadow: isLoading || !message.trim() ? 'none' : '0 4px 12px rgba(255, 107, 53, 0.3)',
+                      transition: 'all 0.2s ease',
                     }}
                   >
-                    ➤
+                    {isLoading ? '...' : '➤'}
                   </button>
                 </div>
               </div>
