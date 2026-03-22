@@ -5,6 +5,7 @@ import Image from "next/image";
 import BodyClassUpdater from "../../components/BodyClassUpdater";
 import { Button, useToast } from "@/components/ui";
 import Header from "@/components/Header";
+import { getHabits, saveHabit } from "@/lib/api-client";
 
 import { useEffect } from "react";
 
@@ -70,27 +71,23 @@ export default function HabitsPage() {
 
   const fetchHabits = async () => {
     try {
-      const response = await fetch('/api/habits');
-      if (response.ok) {
-        const data = await response.json();
-        if (data.habits && data.habits.length > 0) {
-          // Transform API data to match UI state
-          setHabits(data.habits.map((h: any) => ({
-            id: h.id,
-            name: h.name,
-            category: h.category,
-            streak: h.streak,
-            completedDays: h.completed_days || [],
-            dayInWeek: 0
-          })));
-          return;
-        }
+      const data = await getHabits();
+      if (data && data.length > 0) {
+        setHabits(data.map((h: any) => ({
+          id: h.id,
+          name: h.name,
+          category: h.category,
+          streak: h.streak,
+          completedDays: h.completedDays || h.completed_days || [],
+          dayInWeek: 0
+        })));
+      } else {
+        setHabits(MOCK_HABITS);
       }
     } catch (error) {
       console.error('Failed to fetch habits:', error);
+      setHabits(MOCK_HABITS);
     }
-    // Fallback to mock data if API fails or returns empty
-    setHabits(MOCK_HABITS);
   };
 
   const categories = ['All', 'Health', 'Productivity', 'Mindfulness'];
@@ -120,24 +117,19 @@ export default function HabitsPage() {
       setError(null);
       try {
         setIsLoading(true);
-        const response = await fetch('/api/habits', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: newHabitName,
-            category: newHabitCategory
-          })
+        const response = await saveHabit({
+          name: newHabitName,
+          category: newHabitCategory
         });
 
-        if (response.ok) {
+        if (response && response.success) {
           setNewHabitName('');
           setNewHabitCategory('Health');
           setIsModalOpen(false);
           fetchHabits();
           showToast("New habit created successfully!", "success");
         } else {
-          const data = await response.json();
-          setError(data.error || 'Failed to create habit. Please check your connection.');
+          setError(response.error || 'Failed to create habit. Please check your connection.');
           showToast("Failed to create habit.", "error");
         }
       } catch (error) {
@@ -168,17 +160,13 @@ export default function HabitsPage() {
     const newStreak = newCompletedDays.length; 
 
     try {
-      const response = await fetch('/api/habits', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: habitId,
-          completedDays: newCompletedDays,
-          streak: newStreak
-        })
+      const response = await saveHabit({
+        id: habitId,
+        completedDays: newCompletedDays,
+        streak: newStreak
       });
 
-      if (response.ok) {
+      if (response && response.success) {
         fetchHabits();
         showToast("Habit updated!", "success");
       } else {
@@ -755,8 +743,8 @@ export default function HabitsPage() {
                     onClick={async () => {
                       if (confirm(`Delete "${habit.name}"? This cannot be undone.`)) {
                         try {
-                          const response = await fetch(`/api/habits/${habit.id}`, { method: 'DELETE' });
-                          if (response.ok) {
+                          const response = await saveHabit({ id: habit.id, isDeleted: true });
+                          if (response && response.success) {
                             fetchHabits();
                             showToast(`${habit.name} deleted successfully!`, "success");
                           } else {

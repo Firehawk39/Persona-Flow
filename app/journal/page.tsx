@@ -5,6 +5,7 @@ import Image from "next/image";
 import BodyClassUpdater from "../../components/BodyClassUpdater";
 import { Button, useToast } from "@/components/ui";
 import Header from "@/components/Header";
+import { getJournalEntries, saveJournalEntry } from "@/lib/api-client";
 
 import { useEffect } from "react";
 
@@ -81,35 +82,20 @@ export default function JournalPage() {
   }, []);
 
   const fetchEntries = async () => {
+    setIsLoading(true);
     try {
-      const response = await fetch('/api/journal');
-      if (response.ok) {
-        const data = await response.json();
-        if (data.entries && data.entries.length > 0) {
-          // Transform API data to match UI state if needed
-          setRecentEntries(data.entries.map((e: any) => {
-            const date = new Date(e.created_at);
-            return {
-              id: e.id,
-              date: date.toLocaleDateString('en-US', { 
-                weekday: 'long', 
-                day: 'numeric', 
-                month: 'short', 
-                year: 'numeric' 
-              }),
-              mood: e.mood,
-              text: e.content,
-              insight: e.ai_insight
-            };
-          }));
-          return;
-        }
+      const data = await getJournalEntries();
+      if (data && data.length > 0) {
+        setRecentEntries(data);
+      } else {
+        setRecentEntries(MOCK_ENTRIES);
       }
     } catch (error) {
       console.error('Failed to fetch entries:', error);
+      setRecentEntries(MOCK_ENTRIES);
+    } finally {
+      setIsLoading(false);
     }
-    // Fallback to mock data
-    setRecentEntries(MOCK_ENTRIES);
   };
 
   const getMoodColor = (mood: string) => {
@@ -129,46 +115,9 @@ export default function JournalPage() {
 
     setIsLoading(true);
     try {
-      // 1. Get AI Insight first (via Chat API for now, or dedicated endpoint)
-      // For simplicity, we'll just save the entry and let the backend handle insight generation if we had a trigger
-      // But per plan, we might want to generate insight on the fly.
-      // Let's assume the POST /api/journal handles it or we do it here.
-      // The reference project did it on the client. Let's do it on the server in the POST route if possible, 
-      // or just save it for now.
-      
-      // Actually, let's generate insight via the chat API first to mimic the reference flow
-      let insight = "";
-      try {
-        const insightResponse = await fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            message: `Analyze this journal entry and provide a short, helpful insight: "${journalText}" Mood: ${selectedMood}`,
-            history: [],
-            context: { page: 'journal' }
-          })
-        });
-        if (insightResponse.ok) {
-          const data = await insightResponse.json();
-          insight = data.response;
-        }
-      } catch (e) {
-        console.error("Failed to generate insight", e);
-      }
+      const response = await saveJournalEntry(journalText, moodToSave);
 
-      const response = await fetch('/api/journal', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          content: journalText,
-          mood: moodToSave,
-          aiInsight: insight
-        }),
-      });
-
-      if (response.ok) {
+      if (response && response.success) {
         setJournalText("");
         setSelectedMood(null);
         setSelectedTool(null);

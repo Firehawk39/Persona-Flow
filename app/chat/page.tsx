@@ -5,7 +5,7 @@ import Image from "next/image";
 import BodyClassUpdater from "../../components/BodyClassUpdater";
 import { useToast } from "@/components/ui";
 import Header from "@/components/Header";
-import { sendChatMessage } from "@/lib/api-client";
+import { sendChatMessage, getChatHistory } from "@/lib/api-client";
 
 interface Message {
   id: string;
@@ -82,19 +82,17 @@ export default function ChatPage() {
   }, []);
 
   const fetchHistory = async () => {
-    // In demo mode, use localStorage
     try {
-      const saved = localStorage.getItem('chat_history');
-      if (saved) {
-        const history = JSON.parse(saved);
-        setConversationHistory(history.slice(0, 5)); // Keep only last 5
-        return;
+      const data = await getChatHistory();
+      if (data && data.length > 0) {
+        setConversationHistory(data.slice(0, 5));
+      } else {
+        setConversationHistory(MOCK_HISTORY);
       }
     } catch (error) {
-      console.error('Failed to load history from localStorage:', error);
+      console.error('Failed to fetch history:', error);
+      setConversationHistory(MOCK_HISTORY);
     }
-    // Fallback to mock data
-    setConversationHistory(MOCK_HISTORY);
   };
 
   const saveToHistory = (sessionId: string, firstMessage: string) => {
