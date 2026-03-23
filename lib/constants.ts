@@ -72,7 +72,7 @@ export const MOCK_SESSION_HISTORY: TherapySession[] = [
     insights: "- Voiced feelings of isolation recently.\n- Recognized that small steps towards connection can make a difference.",
     exercise: "Reach out to one friend this week, even just with a simple text message to say hello.",
     transcript: [
-      { id: '2a', role: 'assistant', content: "Let's talk about what's on your mind.", timestamp: 4 },
+      { id: '2a', role: 'assistant', content: "I'm here for you. What's weighing on your mind today?", timestamp: 4 },
       { id: '2b', role: 'user', content: "I've just been feeling really lonely lately.", timestamp: 5 },
     ]
   }

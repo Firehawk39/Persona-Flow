@@ -18,16 +18,19 @@ export default function Therapy() {
       id: "clarity",
       title: "Gain Clarity",
       description: "Understand a situation better.",
+      starterPrompt: "Tell me what's feeling fuzzy or confusing right now. Let's map it out together."
     },
     {
       id: "vent",
       title: "Vent Feelings",
       description: "Express what's on your mind.",
+      starterPrompt: "The floor is yours. No filters, no judgment. What's weighing you down today?"
     },
     {
       id: "solution",
       title: "Find a Solution",
       description: "Work towards an actionable step.",
+      starterPrompt: "You're ready for a change. What's the specific wall you're hitting right now?"
     },
   ];
 
@@ -63,10 +66,11 @@ export default function Therapy() {
 
   const handleStartSession = () => {
     if (selectedOption) {
+      const selected = options.find(o => o.id === selectedOption);
       setIsSessionActive(true);
       setChatHistory([{
         role: 'assistant',
-        content: "Let's talk about what's on your mind."
+        content: selected?.starterPrompt || "FLOW-THERAPIST-v2: What's on your mind today?"
       }]);
       // Scroll to bottom of chat
       setTimeout(() => {
@@ -101,8 +105,8 @@ export default function Therapy() {
         userMessage,
         updatedHistory,
         { 
-          intent: selectedOption,
-          page: 'therapy' 
+          source: 'therapy',
+          session_focus: options.find(o => o.id === selectedOption)?.title || "General Guidance"
         }
       );
 

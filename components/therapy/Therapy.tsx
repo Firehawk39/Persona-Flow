@@ -20,9 +20,9 @@ const moods = [
 ];
 
 const intentions = [
-  { name: 'Gain Clarity', description: 'Understand a situation better.', icon: Sparkles, color: 'from-brand-primary to-brand-accent' },
-  { name: 'Vent Feelings', description: 'Express what\'s on your mind.', icon: MessageCircle, color: 'from-pink-500 to-rose-500' },
-  { name: 'Find a Solution', description: 'Work towards an actionable step.', icon: Zap, color: 'from-amber-500 to-orange-600' },
+  { name: 'Gain Clarity', description: 'Understand a situation better.', icon: Sparkles, color: 'from-brand-primary to-brand-accent', starterPrompt: "Tell me what's feeling fuzzy or confusing right now. Let's map it out together." },
+  { name: 'Vent Feelings', description: 'Express what\'s on your mind.', icon: MessageCircle, color: 'from-pink-500 to-rose-500', starterPrompt: "The floor is yours. No filters, no judgment. What's weighing you down today?" },
+  { name: 'Find a Solution', description: 'Work towards an actionable step.', icon: Zap, color: 'from-amber-500 to-orange-600', starterPrompt: "You're ready for a change. What's the specific wall you're hitting right now?" },
 ];
 
 // Helper for icons since we can't use dynamic imports easily in the array above for MessageCircle
@@ -228,7 +228,10 @@ const Therapy: React.FC<TherapyProps> = ({ settings, sessionHistory, onUpdateHis
         
         <div className="mt-12">
           <button
-            onClick={() => handleStartSession("Let's talk about what's on your mind.", sessionIntention || 'General Discussion')}
+            onClick={() => {
+              const selected = intentions.find(i => i.name === sessionIntention);
+              handleStartSession(selected?.starterPrompt || "I'm listening. What's on your mind?", sessionIntention || 'General Discussion');
+            }}
             disabled={!sessionIntention}
             className={`
                 relative px-8 py-4 rounded-xl font-bold text-white shadow-lg transition-all duration-300
