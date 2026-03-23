@@ -122,6 +122,9 @@ export async function getJournalEntries() {
 export async function saveJournalEntry(content: string, mood: string) {
   const payload = { ...getBasePayload('journal', 'save'), message: content, mood };
   const data = await n8nFetch(payload);
+  if (data && typeof data === 'object' && !('success' in data)) {
+    data.success = true;
+  }
   return data || { success: true, isOffline: true };
 }
 
@@ -133,6 +136,9 @@ export async function getHabits() {
 export async function saveHabit(habit: any) {
   const payload = { ...getBasePayload('habits', 'save'), habit };
   const data = await n8nFetch(payload);
+  if (data && typeof data === 'object' && !('success' in data)) {
+    data.success = true;
+  }
   return data || { success: true, isOffline: true };
 }
 
