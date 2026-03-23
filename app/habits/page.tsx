@@ -24,7 +24,7 @@ const MOCK_HABITS: Habit[] = [
     name: 'Morning Meditation',
     category: 'Mindfulness',
     streak: 5,
-    completedDays: ['2025-11-23', '2025-11-24', '2025-11-25', '2025-11-26', '2025-11-27'],
+    completedDays: ['2026-03-19', '2026-03-20', '2026-03-21', '2026-03-22', '2026-03-23'],
     dayInWeek: 0
   },
   {
@@ -32,7 +32,7 @@ const MOCK_HABITS: Habit[] = [
     name: 'Drink 2L Water',
     category: 'Health',
     streak: 12,
-    completedDays: ['2025-11-20', '2025-11-21', '2025-11-22', '2025-11-23', '2025-11-24', '2025-11-25', '2025-11-26', '2025-11-27'],
+    completedDays: ['2026-03-16', '2026-03-17', '2026-03-18', '2026-03-19', '2026-03-20', '2026-03-21', '2026-03-22', '2026-03-23'],
     dayInWeek: 0
   },
   {
@@ -40,7 +40,7 @@ const MOCK_HABITS: Habit[] = [
     name: 'Read 30 Mins',
     category: 'Productivity',
     streak: 3,
-    completedDays: ['2025-11-25', '2025-11-26', '2025-11-27'],
+    completedDays: ['2026-03-21', '2026-03-22', '2026-03-23'],
     dayInWeek: 0
   },
   {
@@ -48,7 +48,7 @@ const MOCK_HABITS: Habit[] = [
     name: 'Evening Walk',
     category: 'Health',
     streak: 8,
-    completedDays: ['2025-11-22', '2025-11-23', '2025-11-24', '2025-11-25', '2025-11-26', '2025-11-27'],
+    completedDays: ['2026-03-18', '2026-03-19', '2026-03-20', '2026-03-21', '2026-03-22', '2026-03-23'],
     dayInWeek: 0
   }
 ];
@@ -93,10 +93,11 @@ export default function HabitsPage() {
   const categories = ['All', 'Health', 'Productivity', 'Mindfulness'];
 
   const getCategoryColor = (category: string) => {
+    if (!category) return { bg: '#9ca3af', text: '#1f2937' };
     const colors: { [key: string]: { bg: string; text: string } } = {
-      'mindfulness': { bg: '#ffe4e6', text: '#be123c' }, // Rose (Warm & Calming)
-      'health': { bg: '#ccfbf1', text: '#0f766e' },      // Teal (Fresh & Clean)
-      'productivity': { bg: '#e0e7ff', text: '#4338ca' }, // Indigo (Focused)
+      'mindfulness': { bg: '#ffe4e6', text: '#be123c' },
+      'health': { bg: '#ccfbf1', text: '#0f766e' },
+      'productivity': { bg: '#e0e7ff', text: '#4338ca' },
     };
     return colors[category.toLowerCase()] || { bg: '#9ca3af', text: '#1f2937' };
   };
@@ -105,8 +106,9 @@ export default function HabitsPage() {
     ? habits 
     : habits.filter(h => h.category?.toLowerCase() === selectedCategory.toLowerCase());
 
+  const today = new Date().toISOString().split('T')[0];
   const todayProgress = {
-    completed: habits.filter(h => h.completedDays.includes('2025-11-27')).length,
+    completed: habits.filter(h => h.completedDays.includes(today)).length,
     total: habits.length
   };
 
@@ -1187,15 +1189,14 @@ export default function HabitsPage() {
               <Button
                 onClick={async () => {
                   try {
-                    const response = await fetch(`/api/habits/${editingHabit.id}`, {
-                      method: 'PUT',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({
-                        name: editingHabit.name,
-                        category: editingHabit.category,
-                      }),
+                    setIsLoading(true);
+                    const response = await saveHabit({
+                      id: editingHabit.id,
+                      name: editingHabit.name,
+                      category: editingHabit.category,
                     });
-                    if (response.ok) {
+                    
+                    if (response && response.success) {
                       fetchHabits();
                       setEditingHabit(null);
                       showToast('Habit updated successfully!', 'success');
@@ -1205,6 +1206,8 @@ export default function HabitsPage() {
                   } catch (error) {
                     console.error('Failed to update habit:', error);
                     showToast('An error occurred while updating.', 'error');
+                  } finally {
+                    setIsLoading(false);
                   }
                 }}
                 variant="primary"
@@ -1320,7 +1323,7 @@ export default function HabitsPage() {
               gridTemplateColumns: 'repeat(7, 1fr)',
               gap: '8px',
             }}>
-              {viewingHistory.completedDays.sort().reverse().slice(0, 28).map((dateStr) => {
+              {[...viewingHistory.completedDays].sort().reverse().slice(0, 28).map((dateStr) => {
                 const date = new Date(dateStr);
                 const day = date.getDate();
                 const month = date.toLocaleDateString('en-US', { month: 'short' });
