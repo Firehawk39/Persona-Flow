@@ -10,11 +10,13 @@ import { getJournalEntries, saveJournalEntry } from "@/lib/api-client";
 import { useEffect } from "react";
 
 interface JournalEntry {
-  id: number;
+  id: number | string;
   date: string;
   mood: string;
-  text: string;
-  insight: string;
+  text?: string;
+  content?: string;
+  insight?: string;
+  aiInsight?: string;
 }
 
 const MOCK_ENTRIES: JournalEntry[] = [
@@ -528,7 +530,7 @@ export default function JournalPage() {
                   whiteSpace: 'pre-wrap',
                   padding: '0 20px',
                 }}>
-                  {viewingEntry.text}
+                  {viewingEntry.text || viewingEntry.content}
                 </div>
 
                 {/* Insight Card */}
@@ -561,7 +563,7 @@ export default function JournalPage() {
                         lineHeight: '1.6',
                         margin: 0,
                       }}>
-                        {viewingEntry.insight}
+                        {viewingEntry.insight || viewingEntry.aiInsight}
                       </p>
                     </div>
                   </div>
@@ -654,7 +656,7 @@ export default function JournalPage() {
                     marginBottom: '20px',
                     fontStyle: 'italic',
                   }}>
-                    "{entry.text}"
+                    "{entry.text || entry.content}"
                   </p>
 
                   {/* AI Insight */}
@@ -677,7 +679,7 @@ export default function JournalPage() {
                         lineHeight: '1.5',
                         margin: 0,
                       }}>
-                        {entry.insight}
+                        {entry.insight || entry.aiInsight}
                       </p>
                     </div>
                   </div>
