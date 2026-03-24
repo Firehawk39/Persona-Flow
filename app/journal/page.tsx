@@ -17,6 +17,7 @@ interface JournalEntry {
   content?: string;
   insight?: string;
   aiInsight?: string;
+  tags?: string[];
 }
 
 const MOCK_ENTRIES: JournalEntry[] = [
@@ -100,6 +101,20 @@ export default function JournalPage() {
     }
   };
 
+  const formatDate = (dateStr: string) => {
+    try {
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime())) return dateStr;
+      return date.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      });
+    } catch (e) {
+      return dateStr;
+    }
+  };
+
   const getMoodColor = (mood: string) => {
     const moodColors: { [key: string]: { bg: string; text: string } } = {
       'Happy': { bg: '#fbbf24', text: '#78350f' },        // Yellow (Joy from Inside Out)
@@ -117,7 +132,9 @@ export default function JournalPage() {
 
     setIsLoading(true);
     try {
-      const response = await saveJournalEntry(journalText, moodToSave);
+      // Pass tags if a tool was selected
+      const tags = selectedTool ? [selectedTool.charAt(0).toUpperCase() + selectedTool.slice(1)] : [];
+      const response = await (saveJournalEntry as any)(journalText, moodToSave, tags);
 
       if (response && response.success) {
         setJournalText("");
@@ -507,18 +524,33 @@ export default function JournalPage() {
                     color: '#4a4a4a',
                     marginBottom: '16px',
                   }}>
-                    {viewingEntry.date}
+                    {formatDate(viewingEntry.date)}
                   </h2>
-                  <span style={{
-                    background: getMoodColor(viewingEntry.mood).bg,
-                    color: getMoodColor(viewingEntry.mood).text,
-                    padding: '8px 20px',
-                    borderRadius: '20px',
-                    fontSize: '16px',
-                    fontWeight: '600',
-                  }}>
-                    {viewingEntry.mood}
-                  </span>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <span style={{
+                      background: getMoodColor(viewingEntry.mood).bg,
+                      color: getMoodColor(viewingEntry.mood).text,
+                      padding: '8px 20px',
+                      borderRadius: '20px',
+                      fontSize: '16px',
+                      fontWeight: '600',
+                    }}>
+                      {viewingEntry.mood}
+                    </span>
+                    {viewingEntry.tags?.map(tag => (
+                      <span key={tag} style={{
+                        background: 'rgba(249, 115, 22, 0.15)',
+                        color: '#f97316',
+                        padding: '8px 16px',
+                        borderRadius: '20px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        border: '1px solid #f97316'
+                      }}>
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Entry Content */}
@@ -634,18 +666,33 @@ export default function JournalPage() {
                       fontWeight: '600',
                       color: '#4a4a4a',
                     }}>
-                      {entry.date}
+                      {formatDate(entry.date)}
                     </span>
-                    <span style={{
-                      background: getMoodColor(entry.mood).bg,
-                      color: getMoodColor(entry.mood).text,
-                      padding: '6px 14px',
-                      borderRadius: '12px',
-                      fontSize: '13px',
-                      fontWeight: '700',
-                    }}>
-                      {entry.mood}
-                    </span>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      {entry.tags?.slice(0, 1).map(tag => (
+                        <span key={tag} style={{
+                          background: 'rgba(249, 115, 22, 0.1)',
+                          color: '#f97316',
+                          padding: '4px 10px',
+                          borderRadius: '8px',
+                          fontSize: '12px',
+                          fontWeight: '600',
+                          border: '1px solid rgba(249, 115, 22, 0.2)'
+                        }}>
+                          {tag}
+                        </span>
+                      ))}
+                      <span style={{
+                        background: getMoodColor(entry.mood).bg,
+                        color: getMoodColor(entry.mood).text,
+                        padding: '6px 14px',
+                        borderRadius: '12px',
+                        fontSize: '13px',
+                        fontWeight: '700',
+                      }}>
+                        {entry.mood}
+                      </span>
+                    </div>
                   </div>
 
                   {/* Entry Text */}

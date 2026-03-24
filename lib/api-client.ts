@@ -119,8 +119,8 @@ export async function getJournalEntries() {
   return data?.entries || data?.data || (data && Array.isArray(data) ? data : getMockJournalEntries());
 }
 
-export async function saveJournalEntry(content: string, mood: string) {
-  const payload = { ...getBasePayload('journal', 'save'), message: content, mood };
+export async function saveJournalEntry(content: string, mood: string, tags: string[] = []) {
+  const payload = { ...getBasePayload('journal', 'save'), message: content, mood, tags };
   const data = await n8nFetch(payload);
   if (data && typeof data === 'object' && !('success' in data)) {
     data.success = true;
