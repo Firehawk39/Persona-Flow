@@ -145,38 +145,38 @@ export default function HabitsPage() {
   };
 
   const toggleHabitCompletion = async (habitId: string, dateStr: string) => {
-    const habit = habits.find(h => h.id === habitId);
-    if (!habit) return;
-
-    const isCompleted = habit.completedDays.includes(dateStr);
-    let newCompletedDays = [...habit.completedDays];
-    
-    if (isCompleted) {
-      newCompletedDays = newCompletedDays.filter(d => d !== dateStr);
-    } else {
-      newCompletedDays.push(dateStr);
-    }
-    
-    // Simple streak calculation logic for demo
-    // In real app, backend should calculate this
-    const newStreak = newCompletedDays.length; 
+    // 1. Optimistic Update
+    setHabits(prevHabits => prevHabits.map(h => {
+      if (h.id === habitId) {
+        const isCompleted = h.completedDays.includes(dateStr);
+        const newCompletedDays = isCompleted 
+          ? h.completedDays.filter(d => d !== dateStr)
+          : [...h.completedDays, dateStr];
+        return { ...h, completedDays: newCompletedDays, streak: newCompletedDays.length };
+      }
+      return h;
+    }));
 
     try {
       const response = await saveHabit({
         id: habitId,
-        completedDays: newCompletedDays,
-        streak: newStreak
+        date: dateStr,
+        action: 'toggle'
       });
 
       if (response && response.success) {
-        fetchHabits();
         showToast("Habit updated!", "success");
+        // We don't refetch here to keep the optimistic state, 
+        // unless we want to sync with real DB. 
+        // For demo, staying with optimistic is better.
       } else {
-        showToast("Failed to update habit.", "error");
+        showToast("Failed to sync with server.", "error");
+        fetchHabits(); // Rollback on failure
       }
     } catch (error) {
       console.error('Failed to update habit:', error);
-      showToast("An error occurred while updating.", "error");
+      showToast("An error occurred. Rolling back.", "error");
+      fetchHabits(); // Rollback
     }
   };
 
@@ -631,12 +631,21 @@ export default function HabitsPage() {
               }}>
                 {Array.from({ length: 7 }, (_, i) => {
                   const date = new Date();
-                  date.setDate(date.getDate() - (6 - i)); // Last 7 days ending today
-                  const dateStr = date.toISOString().split('T')[0];
+                  date.setDate(date.getDate() - (6 - i));
+                  
+                  // Local date string YYYY-MM-DD
+                  const year = date.getFullYear();
+                  const month = String(date.getMonth() + 1).padStart(2, '0');
+                  const dayNum = String(date.getDate()).padStart(2, '0');
+                  const dateStr = `${year}-${month}-${dayNum}`;
+                  
                   const day = date.getDate();
                   const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'short' });
                   const isCompleted = habit.completedDays.includes(dateStr);
-                  const isToday = dateStr === new Date().toISOString().split('T')[0];
+                  
+                  const now = new Date();
+                  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+                  const isToday = dateStr === todayStr;
                   
                   return (
                     <div
