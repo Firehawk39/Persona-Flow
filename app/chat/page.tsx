@@ -385,7 +385,7 @@ export default function ChatPage() {
                       fontSize: '20px',
                       boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                     }}>
-                      🤖
+                      <Image src="/icon.png" alt="PersonaFlow" width={28} height={28} />
                     </div>
                   )}
                   

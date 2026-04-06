@@ -441,7 +441,7 @@ export default function Therapy() {
                         border: '1px solid rgba(255, 255, 255, 0.3)',
                         flexShrink: 0,
                       }}>
-                        🤖
+                        <Image src="/icon.png" alt="PersonaFlow" width={28} height={28} />
                       </div>
                     )}
                     <div style={{
@@ -487,7 +487,7 @@ export default function Therapy() {
                       fontSize: '18px',
                       border: '1px solid rgba(255, 255, 255, 0.3)',
                     }}>
-                      🤖
+                      <Image src="/icon.png" alt="PersonaFlow" width={28} height={28} />
                     </div>
                     <div style={{
                       background: 'rgba(255, 255, 255, 0.4)',
@@ -804,7 +804,7 @@ export default function Therapy() {
                             boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                             flexShrink: 0,
                           }}>
-                            🤖
+                            <Image src="/icon.png" alt="PersonaFlow" width={28} height={28} />
                           </div>
                         )}
                         

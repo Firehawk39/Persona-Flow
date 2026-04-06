@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   title: "Home - PersonaFlow",
   description: "Personaflow Your personal growth companion Get Started Serenity A calm space to understand your emotions, reflect on your day and receive gentle guidance",
   icons: {
-    icon: "/icon.png?v=3",
-    shortcut: "/icon.png?v=3",
-    apple: "/icon.png?v=3",
+    icon: "/icon.png?v=4",
+    shortcut: "/icon.png?v=4",
+    apple: "/icon.png?v=4",
   }
 };
 
