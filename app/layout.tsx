@@ -6,6 +6,11 @@ import { ToastProvider } from "@/components/ui/Toast";
 export const metadata: Metadata = {
   title: "Home - PersonaFlow",
   description: "Personaflow Your personal growth companion Get Started Serenity A calm space to understand your emotions, reflect on your day and receive gentle guidance",
+  icons: {
+    icon: "/icon.png?v=3",
+    shortcut: "/icon.png?v=3",
+    apple: "/icon.png?v=3",
+  }
 };
 
 export default function RootLayout({
