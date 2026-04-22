@@ -54,6 +54,7 @@ export default function ChatPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatScrollRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const { showToast } = useToast();
 
@@ -102,7 +103,9 @@ export default function ChatPage() {
   };
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (chatScrollRef.current) {
+      chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
+    }
   };
 
   useEffect(() => {
@@ -320,17 +323,19 @@ export default function ChatPage() {
           }}>
             
             {/* Chat Area */}
-            <div style={{
-              flex: 1,
-              overflowY: 'auto',
-              padding: messages.length === 0 ? '0' : '40px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '24px',
-              scrollBehavior: 'smooth',
-              opacity: messages.length === 0 ? 0 : 1,
-              transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
-            }}>
+            <div 
+              ref={chatScrollRef}
+              style={{
+                flex: 1,
+                overflowY: 'auto',
+                padding: messages.length === 0 ? '0' : '40px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '24px',
+                scrollBehavior: 'smooth',
+                opacity: messages.length === 0 ? 0 : 1,
+                transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+              }}>
               
               {/* Messages */}
               {messages.map((message) => (

@@ -39,9 +39,12 @@ const Therapy: React.FC<TherapyProps> = ({ settings, sessionHistory, onUpdateHis
   const [summary, setSummary] = useState({ title: '', insights: '', exercise: ''});
   const [viewingSession, setViewingSession] = useState<TherapySession | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatScrollRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (chatScrollRef.current) {
+      chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
+    }
   };
 
   useEffect(() => {
@@ -273,7 +276,10 @@ const Therapy: React.FC<TherapyProps> = ({ settings, sessionHistory, onUpdateHis
         </div>
 
         {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth">
+        <div 
+          ref={chatScrollRef}
+          className="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth"
+        >
             {messages.map((msg) => (
               <div
                 key={msg.id}
