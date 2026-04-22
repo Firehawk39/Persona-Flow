@@ -8,7 +8,7 @@ import { Habit } from './types';
 
 export function isDemoMode(): boolean {
   return process.env.NEXT_PUBLIC_APP_MODE === 'demo' ||
-         process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
+    process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
 }
 
 export function getWebhookUrl(): string {
@@ -120,9 +120,25 @@ async function n8nFetch(payload: Record<string, unknown>) {
 
 // --- ACTUAL FUNCTIONS ---
 
+function sanitizeAiResponse(text: string): string {
+  if (!text) return "";
+  return text.trim();
+}
+
 export async function sendChatMessage(message: string, history: unknown[], contextExtra: Record<string, unknown> = {}) {
   const payload = { ...getBasePayload('chat', 'message'), message, history, ...contextExtra };
   const data = await n8nFetch(payload);
+
+  if (data && typeof data.text === 'string') {
+    data.text = sanitizeAiResponse(data.text);
+  }
+  if (data && typeof data.response === 'string') {
+    data.response = sanitizeAiResponse(data.response);
+  }
+  if (data && typeof data.output === 'string') {
+    data.output = sanitizeAiResponse(data.output);
+  }
+
   return data || { text: "Connection error. Using offline fallback." };
 }
 
