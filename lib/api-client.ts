@@ -120,51 +120,9 @@ async function n8nFetch(payload: Record<string, unknown>) {
 
 // --- ACTUAL FUNCTIONS ---
 
-function sanitizeAiResponse(text: string): string {
-  if (!text) return "";
-  let cleaned = text.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
-  
-  if (cleaned.includes('Thinking Process:')) {
-    // Aggressive cleanup for instruction-tuned models that leak "Thinking Process:"
-    // This removes everything from "Thinking Process:" up to the last capitalized sentence
-    const parts = cleaned.split(/Thinking Process:/);
-    if (parts.length > 1) {
-      const thoughtProcess = parts[1];
-      // Try to find the start of the actual output, which usually follows the last markdown bold tag like "**Final Polish:**"
-      const lastStar = thoughtProcess.lastIndexOf('**');
-      if (lastStar !== -1) {
-        const afterStar = thoughtProcess.substring(lastStar + 2);
-        const firstDot = afterStar.indexOf('.');
-        if (firstDot !== -1 && firstDot < afterStar.length - 5) {
-           cleaned = afterStar.substring(firstDot + 1).trim();
-        } else {
-           cleaned = afterStar.trim();
-        }
-      } else {
-        // Fallback: just split by newlines and take the last part
-        const lines = thoughtProcess.split('\n');
-        cleaned = lines[lines.length - 1].trim();
-      }
-    }
-  }
-  
-  return cleaned;
-}
-
 export async function sendChatMessage(message: string, history: unknown[], contextExtra: Record<string, unknown> = {}) {
   const payload = { ...getBasePayload('chat', 'message'), message, history, ...contextExtra };
   const data = await n8nFetch(payload);
-  
-  if (data && typeof data.text === 'string') {
-    data.text = sanitizeAiResponse(data.text);
-  }
-  if (data && typeof data.response === 'string') {
-    data.response = sanitizeAiResponse(data.response);
-  }
-  if (data && typeof data.output === 'string') {
-    data.output = sanitizeAiResponse(data.output);
-  }
-  
   return data || { text: "Connection error. Using offline fallback." };
 }
 
