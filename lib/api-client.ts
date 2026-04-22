@@ -13,12 +13,17 @@ export function isDemoMode(): boolean {
 export function getWebhookUrl(): string {
   if (typeof window === 'undefined') return '';
 
-  // If the user has set a personal webhook, use it directly
+  // In demo mode, ALWAYS use the server-side proxy to avoid CORS.
+  // The proxy reads N8N_WEBHOOK_URL from Vercel's secret env vars.
+  if (isDemoMode()) {
+    return '/api/n8n';
+  }
+
+  // In personal mode, allow a user-configured webhook URL
   const personal = localStorage.getItem('n8n_webhook_url');
   if (personal?.trim()) return personal.trim();
 
-  // Otherwise, always route through our server-side proxy.
-  // The proxy reads N8N_WEBHOOK_URL from Vercel's secret env vars.
+  // Fallback to proxy
   return '/api/n8n';
 }
 
