@@ -35,6 +35,8 @@ export async function POST(request: Request) {
         { error: 'n8n returned an error', details: errorText },
         { status: response.status }
       );
+    }
+    
     let data;
     const responseText = await response.text();
     try {
