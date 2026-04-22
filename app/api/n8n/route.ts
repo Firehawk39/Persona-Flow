@@ -35,19 +35,25 @@ export async function POST(request: Request) {
         { error: 'n8n returned an error', details: errorText },
         { status: response.status }
       );
+    let data;
+    const responseText = await response.text();
+    try {
+      data = responseText ? JSON.parse(responseText) : {};
+    } catch (parseError) {
+      console.warn('[API-PROXY] n8n returned non-JSON:', responseText);
+      data = { text: responseText }; // Fallback to wrap text in an object
     }
 
-    const data = await response.json();
     return NextResponse.json(data);
 
   } catch (error: any) {
     console.error('[API-PROXY] Fetch Failure:', error.message);
     
-    // If we're here, the server literally couldn't reach the domain (DNS/Tunnel down)
+    // If we're here, the server literally couldn't reach the domain or something crashed
     return NextResponse.json(
       { 
-        error: 'N8N_UNREACHABLE', 
-        message: 'The Vercel server could not reach your n8n tunnel.',
+        error: 'N8N_PROXY_ERROR', 
+        message: 'The Vercel server encountered an error communicating with n8n.',
         details: error.message,
         url_attempted: targetUrl
       },
