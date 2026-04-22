@@ -6,7 +6,7 @@ import { NextResponse } from 'next/server';
  */
 
 export async function POST(request: Request) {
-  // 1. Get URLs from environment variables
+  // 1. Get the target URL from environment variables
   const prodUrl = process.env.N8N_WEBHOOK_URL || process.env.NEXT_PUBLIC_DEMO_WEBHOOK_URL;
   const testUrl = process.env.NEXT_PUBLIC_DEMO_WEBHOOK_TEST_URL;
 
@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     // (Added flexibility for "incorporating both")
     const isTestMode = body.useTestMode === true || body.source === 'test';
 
-    const targetUrl = isTestMode && testUrl ? testUrl : prodUrl;
+    const targetUrl = (isTestMode && testUrl) ? testUrl : prodUrl;
 
     if (!targetUrl) {
       return NextResponse.json({ error: 'Webhook URL not configured' }, { status: 500 });

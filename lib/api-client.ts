@@ -7,15 +7,19 @@
 
 export function getWebhookUrl(): string {
   if (typeof window === 'undefined') return '';
-  const isDemo = process.env.NEXT_PUBLIC_APP_MODE === 'demo';
-  const demoUrl = process.env.NEXT_PUBLIC_DEMO_WEBHOOK_URL;
+  // Compatible with both APP_MODE=demo OR DEMO_MODE=true
+  const isDemo = process.env.NEXT_PUBLIC_APP_MODE === 'demo' || process.env.NEXT_PUBLIC_DEMO_MODE === 'true' || process.env.NEXT_PUBLIC_DEMO_MODE === true;
+  
+  // Use the production webhook URL
+  const demoUrl = process.env.NEXT_PUBLIC_DEMO_WEBHOOK_URL || process.env.N8N_WEBHOOK_URL;
+  
   if (isDemo && demoUrl) return demoUrl.trim();
   const personal = localStorage.getItem('n8n_webhook_url');
   return personal?.trim() || demoUrl || '';
 }
 
 export function isDemoMode(): boolean {
-  return process.env.NEXT_PUBLIC_APP_MODE === 'demo';
+  return process.env.NEXT_PUBLIC_APP_MODE === 'demo' || process.env.NEXT_PUBLIC_DEMO_MODE === 'true' || process.env.NEXT_PUBLIC_DEMO_MODE === true;
 }
 
 // Standard Metadata helper
