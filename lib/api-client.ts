@@ -8,22 +8,29 @@
 export function getWebhookUrl(): string {
   if (typeof window === 'undefined') return '';
   
-  const isDemo = process.env.NEXT_PUBLIC_APP_MODE === 'demo' || 
-                 process.env.NEXT_PUBLIC_DEMO_MODE === 'true' || 
-                 process.env.NEXT_PUBLIC_DEMO_MODE === true;
-  
-  // On the browser, we might not have the secret N8N_WEBHOOK_URL.
-  // We return a placeholder so n8nFetch doesn't bail out, then n8nFetch routes to /api/n8n.
-  const demoUrl = process.env.NEXT_PUBLIC_DEMO_WEBHOOK_URL || process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL;
-  
-  if (isDemo) return demoUrl?.trim() || 'PROXY_MODE';
-  
   const personal = localStorage.getItem('n8n_webhook_url');
-  return personal?.trim() || demoUrl || '';
+  if (personal?.trim()) {
+    return personal.trim();
+  }
+
+  // If no personal webhook is set, ALWAYS fallback to the proxy.
+  // The server-side proxy will securely read from Vercel's env variables.
+  return '/api/n8n';
 }
 
 export function isDemoMode(): boolean {
-  return process.env.NEXT_PUBLIC_APP_MODE === 'demo' || process.env.NEXT_PUBLIC_DEMO_MODE === 'true' || process.env.NEXT_PUBLIC_DEMO_MODE === true;
+  const envDemo = process.env.NEXT_PUBLIC_APP_MODE === 'demo' || 
+                  process.env.NEXT_PUBLIC_DEMO_MODE === 'true' || 
+                  process.env.NEXT_PUBLIC_DEMO_MODE === true;
+                  
+  if (envDemo) return true;
+  
+  // Fallback: If we are running on Vercel, assume it's the demo
+  if (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')) {
+    return true;
+  }
+  
+  return false;
 }
 
 // Standard Metadata helper
@@ -114,12 +121,22 @@ async function n8nFetch(payload: any) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
-    if (!response.ok) return null;
+    
+    if (!response.ok) {
+      // If the proxy or n8n returns an error, let's capture it
+      const errData = await response.json().catch(() => null);
+      console.error('[API-CLIENT] HTTP Error:', response.status, errData);
+      // Return a faux response so the user sees the actual error in the chat
+      return { 
+        text: `Server Error (${response.status}): ${errData?.error || 'Unknown error configuring n8n.'} ${errData?.details || ''}` 
+      };
+    }
+    
     const data = await response.json();
     return data;
   } catch (error) {
     console.error('[API-CLIENT] Fetch error:', error);
-    return null;
+    return { text: "Network error fetching /api/n8n. Please check console." };
   }
 }
 
