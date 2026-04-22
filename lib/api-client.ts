@@ -7,13 +7,17 @@
 
 export function getWebhookUrl(): string {
   if (typeof window === 'undefined') return '';
-  // Compatible with both APP_MODE=demo OR DEMO_MODE=true
-  const isDemo = process.env.NEXT_PUBLIC_APP_MODE === 'demo' || process.env.NEXT_PUBLIC_DEMO_MODE === 'true' || process.env.NEXT_PUBLIC_DEMO_MODE === true;
   
-  // Use the production webhook URL
-  const demoUrl = process.env.NEXT_PUBLIC_DEMO_WEBHOOK_URL || process.env.N8N_WEBHOOK_URL;
+  const isDemo = process.env.NEXT_PUBLIC_APP_MODE === 'demo' || 
+                 process.env.NEXT_PUBLIC_DEMO_MODE === 'true' || 
+                 process.env.NEXT_PUBLIC_DEMO_MODE === true;
   
-  if (isDemo && demoUrl) return demoUrl.trim();
+  // On the browser, we might not have the secret N8N_WEBHOOK_URL.
+  // We return a placeholder so n8nFetch doesn't bail out, then n8nFetch routes to /api/n8n.
+  const demoUrl = process.env.NEXT_PUBLIC_DEMO_WEBHOOK_URL || process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL;
+  
+  if (isDemo) return demoUrl?.trim() || 'PROXY_MODE';
+  
   const personal = localStorage.getItem('n8n_webhook_url');
   return personal?.trim() || demoUrl || '';
 }
@@ -97,12 +101,10 @@ async function n8nFetch(payload: any) {
   
   if (!url) return null;
 
-  // Use the API Proxy for demo mode to solve CORS on Vercel
+  // Always use the API Proxy for demo mode to solve CORS and hide secrets
   const isDemo = isDemoMode();
-  const isDirectUrl = url.startsWith('http');
   
-  // If it's a demo URL (not custom/local), route through our proxy
-  if (isDemo && isDirectUrl) {
+  if (isDemo || url === 'PROXY_MODE') {
     url = '/api/n8n';
   }
 
