@@ -5,32 +5,21 @@
  * Standardized metadata for ALL calls to n8n.
  */
 
-export function getWebhookUrl(): string {
-  if (typeof window === 'undefined') return '';
-  
-  const personal = localStorage.getItem('n8n_webhook_url');
-  if (personal?.trim()) {
-    return personal.trim();
-  }
-
-  // If no personal webhook is set, ALWAYS fallback to the proxy.
-  // The server-side proxy will securely read from Vercel's env variables.
-  return '/api/n8n';
+export function isDemoMode(): boolean {
+  return process.env.NEXT_PUBLIC_APP_MODE === 'demo' ||
+         process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
 }
 
-export function isDemoMode(): boolean {
-  const envDemo = process.env.NEXT_PUBLIC_APP_MODE === 'demo' || 
-                  process.env.NEXT_PUBLIC_DEMO_MODE === 'true' || 
-                  process.env.NEXT_PUBLIC_DEMO_MODE === true;
-                  
-  if (envDemo) return true;
-  
-  // Fallback: If we are running on Vercel, assume it's the demo
-  if (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')) {
-    return true;
-  }
-  
-  return false;
+export function getWebhookUrl(): string {
+  if (typeof window === 'undefined') return '';
+
+  // If the user has set a personal webhook, use it directly
+  const personal = localStorage.getItem('n8n_webhook_url');
+  if (personal?.trim()) return personal.trim();
+
+  // Otherwise, always route through our server-side proxy.
+  // The proxy reads N8N_WEBHOOK_URL from Vercel's secret env vars.
+  return '/api/n8n';
 }
 
 // Standard Metadata helper
@@ -103,17 +92,10 @@ export function getMockChatHistory() {
 // --- CORE FETCH WRAPPER ---
 
 async function n8nFetch(payload: any) {
-  let url = getWebhookUrl();
-  console.log(`[API-CLIENT] Talking to n8n via ${url.includes('/api/n8n') ? 'Proxy' : 'Direct'}:`, payload);
-  
-  if (!url) return null;
+  const url = getWebhookUrl();
+  console.log(`[API-CLIENT] Sending to: ${url}`, payload);
 
-  // Always use the API Proxy for demo mode to solve CORS and hide secrets
-  const isDemo = isDemoMode();
-  
-  if (isDemo || url === 'PROXY_MODE') {
-    url = '/api/n8n';
-  }
+  if (!url) return null;
 
   try {
     const response = await fetch(url, {
@@ -121,22 +103,12 @@ async function n8nFetch(payload: any) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
-    
-    if (!response.ok) {
-      // If the proxy or n8n returns an error, let's capture it
-      const errData = await response.json().catch(() => null);
-      console.error('[API-CLIENT] HTTP Error:', response.status, errData);
-      // Return a faux response so the user sees the actual error in the chat
-      return { 
-        text: `Server Error (${response.status}): ${errData?.error || 'Unknown error configuring n8n.'} ${errData?.details || ''}` 
-      };
-    }
-    
+    if (!response.ok) return null;
     const data = await response.json();
     return data;
   } catch (error) {
     console.error('[API-CLIENT] Fetch error:', error);
-    return { text: "Network error fetching /api/n8n. Please check console." };
+    return null;
   }
 }
 

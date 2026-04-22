@@ -1,31 +1,27 @@
 import { NextResponse } from 'next/server';
 
 /**
- * PersonaFlow n8n Proxy (Dual-Mode)
- * Handles both Production (/webhook/) and Test (/webhook-test/) endpoints.
+ * PersonaFlow n8n Proxy
+ * Forwards requests server-side to bypass CORS.
+ * Reads N8N_WEBHOOK_URL from Vercel's secret environment variables.
  */
 
 export async function POST(request: Request) {
-  // 1. Get the target URL from environment variables
-  const prodUrl = process.env.N8N_WEBHOOK_URL || process.env.NEXT_PUBLIC_DEMO_WEBHOOK_URL;
-  const testUrl = process.env.NEXT_PUBLIC_DEMO_WEBHOOK_TEST_URL;
+  const targetUrl = process.env.N8N_WEBHOOK_URL;
+
+  if (!targetUrl) {
+    console.error('[API-PROXY] N8N_WEBHOOK_URL is not set in environment variables');
+    return NextResponse.json(
+      { error: 'N8N_WEBHOOK_URL not configured on server' },
+      { status: 500 }
+    );
+  }
 
   try {
     const body = await request.json();
 
-    // Check if the request explicitly asks for "test mode" or if it's a test source
-    // (Added flexibility for "incorporating both")
-    const isTestMode = body.useTestMode === true || body.source === 'test';
+    console.log('[API-PROXY] Forwarding to:', targetUrl);
 
-    const targetUrl = (isTestMode && testUrl) ? testUrl : prodUrl;
-
-    if (!targetUrl) {
-      return NextResponse.json({ error: 'Webhook URL not configured' }, { status: 500 });
-    }
-
-    console.log(`[API-PROXY] Routing to: ${isTestMode ? 'TEST' : 'PRODUCTION'} endpoint`);
-
-    // 2. Forward to n8n
     const response = await fetch(targetUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -34,8 +30,9 @@ export async function POST(request: Request) {
 
     if (!response.ok) {
       const errorText = await response.text();
+      console.error('[API-PROXY] n8n error:', response.status, errorText);
       return NextResponse.json(
-        { error: 'n8n workflow failed', details: errorText },
+        { error: 'n8n returned an error', details: errorText },
         { status: response.status }
       );
     }
@@ -44,7 +41,10 @@ export async function POST(request: Request) {
     return NextResponse.json(data);
 
   } catch (error: any) {
-    console.error('[API-PROXY] Critical error:', error.message);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error('[API-PROXY] Error:', error.message);
+    return NextResponse.json(
+      { error: 'Failed to reach n8n', details: error.message },
+      { status: 502 }
+    );
   }
 }
