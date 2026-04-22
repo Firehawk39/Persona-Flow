@@ -30,40 +30,40 @@ const getBasePayload = (page: string, action: string) => ({
 
 export function getMockJournalEntries() {
   return [
-    { 
-      id: 'm-j1', 
-      date: '22 Mar 2026', 
-      mood: 'Happy', 
-      content: 'The PersonaFlow project is officially live! It feels amazing to see the frontend and backend finally married and working in real-time.', 
-      aiInsight: 'A significant milestone! Celebrating your wins is crucial for long-term motivation. Your persistence has truly paid off.' 
+    {
+      id: 'm-j1',
+      date: '22 Mar 2026',
+      mood: 'Happy',
+      content: 'The PersonaFlow project is officially live! It feels amazing to see the frontend and backend finally married and working in real-time.',
+      aiInsight: 'A significant milestone! Celebrating your wins is crucial for long-term motivation. Your persistence has truly paid off.'
     },
-    { 
-      id: 'm-j2', 
-      date: '21 Mar 2026', 
-      mood: 'Focused', 
-      content: 'Worked on the habits synchronization today. Ensuring that every data point travels through the n8n webhook was a challenge but worth the effort.', 
-      aiInsight: 'Your attention to architectural detail is a superpower. Unified data flows lead to more scalable and robust applications.' 
+    {
+      id: 'm-j2',
+      date: '21 Mar 2026',
+      mood: 'Focused',
+      content: 'Worked on the habits synchronization today. Ensuring that every data point travels through the n8n webhook was a challenge but worth the effort.',
+      aiInsight: 'Your attention to architectural detail is a superpower. Unified data flows lead to more scalable and robust applications.'
     },
-    { 
-      id: 'm-j3', 
-      date: '20 Mar 2026', 
-      mood: 'Calm', 
-      content: 'Spent some time meditating and reflecting on my career goals. Feeling a lot clearer about the direction I want to take this year.', 
-      aiInsight: 'Clarity is the result of stillness. Regular reflection helps you align your daily actions with your deep-seated aspirations.' 
+    {
+      id: 'm-j3',
+      date: '20 Mar 2026',
+      mood: 'Calm',
+      content: 'Spent some time meditating and reflecting on my career goals. Feeling a lot clearer about the direction I want to take this year.',
+      aiInsight: 'Clarity is the result of stillness. Regular reflection helps you align your daily actions with your deep-seated aspirations.'
     },
-    { 
-      id: 'm-j4', 
-      date: '19 Mar 2026', 
-      mood: 'Anxious', 
-      content: 'Feeling a bit overwhelmed with the upcoming interview. There is so much to prepare for, and I want everything to be perfect.', 
-      aiInsight: 'Channel that nervous energy into preparation, but remember that perfection is the enemy of progress. You are ready!' 
+    {
+      id: 'm-j4',
+      date: '19 Mar 2026',
+      mood: 'Anxious',
+      content: 'Feeling a bit overwhelmed with the upcoming interview. There is so much to prepare for, and I want everything to be perfect.',
+      aiInsight: 'Channel that nervous energy into preparation, but remember that perfection is the enemy of progress. You are ready!'
     },
-    { 
-      id: 'm-j5', 
-      date: '18 Mar 2026', 
-      mood: 'Inspired', 
-      content: 'Had a great conversation with a fellow developer. We talked about the future of local AI and how powerful privacy-first tools can be.', 
-      aiInsight: 'Collaboration sparks innovation. Staying at the forefront of privacy-first AI will set your work apart in the modern tech landscape.' 
+    {
+      id: 'm-j5',
+      date: '18 Mar 2026',
+      mood: 'Inspired',
+      content: 'Had a great conversation with a fellow developer. We talked about the future of local AI and how powerful privacy-first tools can be.',
+      aiInsight: 'Collaboration sparks innovation. Staying at the forefront of privacy-first AI will set your work apart in the modern tech landscape.'
     }
   ];
 }
@@ -88,9 +88,19 @@ export function getMockChatHistory() {
 // --- CORE FETCH WRAPPER ---
 
 async function n8nFetch(payload: any) {
-  const url = getWebhookUrl();
-  console.log(`[API-CLIENT] Talking to n8n (${payload.source}/${payload.context.action}):`, payload);
+  let url = getWebhookUrl();
+  console.log(`[API-CLIENT] Talking to n8n via ${url.includes('/api/n8n') ? 'Proxy' : 'Direct'}:`, payload);
+  
   if (!url) return null;
+
+  // Use the API Proxy for demo mode to solve CORS on Vercel
+  const isDemo = isDemoMode();
+  const isDirectUrl = url.startsWith('http');
+  
+  // If it's a demo URL (not custom/local), route through our proxy
+  if (isDemo && isDirectUrl) {
+    url = '/api/n8n';
+  }
 
   try {
     const response = await fetch(url, {
@@ -102,6 +112,7 @@ async function n8nFetch(payload: any) {
     const data = await response.json();
     return data;
   } catch (error) {
+    console.error('[API-CLIENT] Fetch error:', error);
     return null;
   }
 }

@@ -375,15 +375,10 @@ export default function ChatPage() {
                 >
                   {message.type === 'ai' && (
                     <div style={{
-                      width: '36px',
-                      height: '36px',
-                      borderRadius: '50%',
-                      background: 'rgba(255, 255, 255, 0.8)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       fontSize: '20px',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                     }}>
                       <Image src="/icon.png" alt="PersonaFlow" width={28} height={28} />
                     </div>

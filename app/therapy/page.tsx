@@ -432,13 +432,10 @@ export default function Therapy() {
                       <div style={{
                         width: '36px',
                         height: '36px',
-                        borderRadius: '50%',
-                        background: 'rgba(255, 255, 255, 0.5)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         fontSize: '18px',
-                        border: '1px solid rgba(255, 255, 255, 0.3)',
                         flexShrink: 0,
                       }}>
                         <Image src="/icon.png" alt="PersonaFlow" width={28} height={28} />
@@ -477,15 +474,10 @@ export default function Therapy() {
                     alignItems: 'flex-start',
                   }}>
                     <div style={{
-                      width: '36px',
-                      height: '36px',
-                      borderRadius: '50%',
-                      background: 'rgba(255, 255, 255, 0.5)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       fontSize: '18px',
-                      border: '1px solid rgba(255, 255, 255, 0.3)',
                     }}>
                       <Image src="/icon.png" alt="PersonaFlow" width={28} height={28} />
                     </div>
@@ -793,15 +785,10 @@ export default function Therapy() {
                       >
                         {!isUser && (
                           <div style={{
-                            width: '36px',
-                            height: '36px',
-                            borderRadius: '50%',
-                            background: 'rgba(255, 255, 255, 0.8)',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             fontSize: '20px',
-                            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                             flexShrink: 0,
                           }}>
                             <Image src="/icon.png" alt="PersonaFlow" width={28} height={28} />
