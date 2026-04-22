@@ -4,6 +4,7 @@
  * Super-Charged PersonaFlow API Client
  * Standardized metadata for ALL calls to n8n.
  */
+import { Habit } from './types';
 
 export function isDemoMode(): boolean {
   return process.env.NEXT_PUBLIC_APP_MODE === 'demo' ||
@@ -96,7 +97,7 @@ export function getMockChatHistory() {
 
 // --- CORE FETCH WRAPPER ---
 
-async function n8nFetch(payload: any) {
+async function n8nFetch(payload: Record<string, unknown>) {
   const url = getWebhookUrl();
   console.log(`[API-CLIENT] Sending to: ${url}`, payload);
 
@@ -119,7 +120,7 @@ async function n8nFetch(payload: any) {
 
 // --- ACTUAL FUNCTIONS ---
 
-export async function sendChatMessage(message: string, history: any[], contextExtra: any = {}) {
+export async function sendChatMessage(message: string, history: unknown[], contextExtra: Record<string, unknown> = {}) {
   const payload = { ...getBasePayload('chat', 'message'), message, history, ...contextExtra };
   const data = await n8nFetch(payload);
   return data || { text: "Connection error. Using offline fallback." };

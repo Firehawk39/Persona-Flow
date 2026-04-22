@@ -45,9 +45,9 @@ export interface JournalEntry {
 
 export interface Habit {
   id: string;
-  title: string;
+  name: string;
   streak: number;
-  completedDates: string[]; // ISO date strings
+  completedDays: string[]; // ISO date strings
   category: "Health" | "Productivity" | "Mindfulness";
 }
 

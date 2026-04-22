@@ -8,24 +8,25 @@ import { useToast } from '@/components/ui';
 import Image from "next/image";
 
 export default function SettingsPage() {
-  const [settings, setSettings] = useState<UserSettings>({
-    userName: 'Traveler',
-    themeColor: 'blue',
-    n8nWebhookUrl: '',
-  });
-  const { showToast } = useToast();
-
-  useEffect(() => {
-    // Load from localStorage on mount
-    const saved = localStorage.getItem('userSettings');
-    if (saved) {
+  const [settings, setSettings] = useState<UserSettings>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('userSettings');
+      if (saved) {
         try {
-            setSettings(JSON.parse(saved));
+          return JSON.parse(saved);
         } catch (e) {
-            console.error("Failed to parse settings", e);
+          console.error("Failed to parse settings", e);
         }
+      }
     }
-  }, []);
+    return {
+      userName: 'Traveler',
+      themeColor: 'blue',
+      n8nWebhookUrl: '',
+    };
+  });
+
+  const { showToast } = useToast();
 
   const handleSave = (newSettings: UserSettings) => {
     setSettings(newSettings);

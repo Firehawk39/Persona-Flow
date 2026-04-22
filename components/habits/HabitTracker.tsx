@@ -8,10 +8,10 @@ import '@js-joda/timezone';
 // --- UTILITY FUNCTIONS ---
 const getISODate = (date: LocalDate = LocalDate.now(ZoneId.systemDefault())) => date.toString();
 
-const calculateStreak = (completedDates: string[]): number => {
-  if (completedDates.length === 0) return 0;
+const calculateStreak = (completedDays: string[]): number => {
+  if (completedDays.length === 0) return 0;
   
-  const sortedDates = completedDates
+  const sortedDates = completedDays
     .map(d => LocalDate.parse(d))
     .sort((a, b) => b.compareTo(a));
 
@@ -70,7 +70,9 @@ const ConfettiExplosion: React.FC<{ x: number; y: number }> = ({ x, y }) => {
         life: 1.0,
       });
     }
-    setParticles(newParticles);
+    setTimeout(() => {
+      setParticles(newParticles);
+    }, 0);
   }, [x, y]);
 
   useEffect(() => {
@@ -140,7 +142,7 @@ const HabitTracker: React.FC<HabitTrackerProps> = ({ habits, setHabits }) => {
     // Trigger confetti if completing today
     if (isToday && e) {
       const habit = habits.find(h => h.id === habitId);
-      if (habit && !habit.completedDates.includes(dateStr)) {
+      if (habit && !habit.completedDays.includes(dateStr)) {
          const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
          setConfettiLoc({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
       }
@@ -148,11 +150,11 @@ const HabitTracker: React.FC<HabitTrackerProps> = ({ habits, setHabits }) => {
 
     setHabits(habits.map(h => {
       if (h.id === habitId) {
-        const completed = h.completedDates.includes(dateStr);
+        const completed = h.completedDays.includes(dateStr);
         const newCompletedDates = completed
-          ? h.completedDates.filter(d => d !== dateStr)
-          : [...h.completedDates, dateStr];
-        return { ...h, completedDates: newCompletedDates };
+          ? h.completedDays.filter(d => d !== dateStr)
+          : [...h.completedDays, dateStr];
+        return { ...h, completedDays: newCompletedDates };
       }
       return h;
     }));
@@ -162,7 +164,8 @@ const HabitTracker: React.FC<HabitTrackerProps> = ({ habits, setHabits }) => {
     if (editingHabit) {
       setHabits(habits.map(h => h.id === habit.id ? habit : h));
     } else {
-      setHabits([...habits, { ...habit, id: `habit-${Date.now()}` }]);
+      const newId = `habit-${Date.now()}`;
+      setHabits([...habits, { ...habit, id: newId }]);
     }
     closeModal();
   };
@@ -279,10 +282,10 @@ const HabitTracker: React.FC<HabitTrackerProps> = ({ habits, setHabits }) => {
 const HabitStatsDashboard: React.FC<{ habits: Habit[] }> = ({ habits }) => {
     const todayStr = getISODate();
     const stats = useMemo(() => {
-        const completedToday = habits.filter(h => h.completedDates.includes(todayStr)).length;
+        const completedToday = habits.filter(h => h.completedDays.includes(todayStr)).length;
         const totalHabits = habits.length;
         const progress = totalHabits > 0 ? (completedToday / totalHabits) * 100 : 0;
-        const longestStreak = Math.max(0, ...habits.map(h => calculateStreak(h.completedDates)));
+        const longestStreak = Math.max(0, ...habits.map(h => calculateStreak(h.completedDays)));
         
         // Calculate "Perfect Days" (last 30 days)
         let perfectDays = 0;
@@ -290,7 +293,7 @@ const HabitStatsDashboard: React.FC<{ habits: Habit[] }> = ({ habits }) => {
             for (let i = 0; i < 30; i++) {
                 const d = LocalDate.now(ZoneId.systemDefault()).minusDays(i);
                 const iso = getISODate(d);
-                const allDone = habits.every(h => h.completedDates.includes(iso));
+                const allDone = habits.every(h => h.completedDays.includes(iso));
                 if (allDone) perfectDays++;
             }
         }
@@ -332,7 +335,7 @@ const HabitStatsDashboard: React.FC<{ habits: Habit[] }> = ({ habits }) => {
                         </div>
                     </div>
                     <div className="flex-1">
-                        <h3 className="text-xl font-bold text-brand-text">Today's Focus</h3>
+                        <h3 className="text-xl font-bold text-brand-text">Today&apos;s Focus</h3>
                         <p className="text-brand-text/60 text-sm mt-1 mb-3">
                             {stats.completedToday} of {stats.totalHabits} habits completed
                         </p>
@@ -345,14 +348,14 @@ const HabitStatsDashboard: React.FC<{ habits: Habit[] }> = ({ habits }) => {
 
             <StatCard 
                 icon={TrendingUp} 
-                title="Current Best Streak" 
+                name="Current Best Streak" 
                 value={`${stats.longestStreak} Days`} 
                 color="orange"
                 trend="Keep it burning!"
             />
              <StatCard 
                 icon={Trophy} 
-                title="Perfect Days (30d)" 
+                name="Perfect Days (30d)" 
                 value={`${stats.perfectDays} Days`} 
                 color="indigo"
                 trend={stats.totalHabits > 0 ? "100% Consistency" : "Start tracking!"}
@@ -361,7 +364,7 @@ const HabitStatsDashboard: React.FC<{ habits: Habit[] }> = ({ habits }) => {
     );
 };
 
-const StatCard: React.FC<{icon: React.ElementType, title: string, value: string, color: string, trend: string}> = ({icon: Icon, title, value, color, trend}) => (
+const StatCard: React.FC<{icon: React.ElementType, name: string, value: string, color: string, trend: string}> = ({icon: Icon, name, value, color, trend}) => (
     <div className={`bg-white/60 backdrop-blur-sm p-6 rounded-2xl border border-brand-text/10 flex flex-col justify-between group hover:border-${color}-500/30 transition-all hover:-translate-y-1`}>
         <div className="flex justify-between items-start mb-4">
             <div className={`w-12 h-12 rounded-xl flex items-center justify-center bg-${color}-500/10 text-${color}-600 group-hover:scale-110 transition-transform`}>
@@ -370,7 +373,7 @@ const StatCard: React.FC<{icon: React.ElementType, title: string, value: string,
         </div>
         <div>
             <p className="text-3xl font-bold text-brand-text mb-1">{value}</p>
-            <p className="text-brand-text/70 text-sm font-medium">{title}</p>
+            <p className="text-brand-text/70 text-sm font-medium">{name}</p>
             <p className={`text-xs text-${color}-600 mt-2 font-medium bg-${color}-50 inline-block px-2 py-0.5 rounded-full`}>{trend}</p>
         </div>
     </div>
@@ -384,8 +387,8 @@ const HabitCard: React.FC<{
     onDelete: (id: string) => void 
 }> = ({ habit, onToggleDate, onEdit, onDelete }) => {
     const [showHistory, setShowHistory] = useState(false);
-    const isCompletedToday = habit.completedDates.includes(getISODate());
-    const streak = useMemo(() => calculateStreak(habit.completedDates), [habit.completedDates]);
+    const isCompletedToday = habit.completedDays.includes(getISODate());
+    const streak = useMemo(() => calculateStreak(habit.completedDays), [habit.completedDays]);
 
     // Determine fire color based on streak
     const getFireColor = () => {
@@ -405,7 +408,7 @@ const HabitCard: React.FC<{
                           'bg-amber-100 text-amber-800'}`}>
                         {habit.category}
                     </span>
-                    <h4 className="text-xl font-bold text-brand-text mt-2 leading-tight">{habit.title}</h4>
+                    <h4 className="text-xl font-bold text-brand-text mt-2 leading-tight">{habit.name}</h4>
                 </div>
                 
                 <div className="flex flex-col items-end">
@@ -420,13 +423,13 @@ const HabitCard: React.FC<{
             {/* Quick Week View - Interactive */}
             {!showHistory && (
                 <WeeklyProgress 
-                    completedDates={habit.completedDates} 
+                    completedDays={habit.completedDays} 
                     onToggle={(date) => onToggleDate(habit.id, date)}
                 />
             )}
             
             {/* Extended History View */}
-            {showHistory && <MonthlyHeatmap completedDates={habit.completedDates} />}
+            {showHistory && <MonthlyHeatmap completedDays={habit.completedDays} />}
 
             <div className="mt-5 pt-4 border-t border-brand-text/5 flex items-center justify-between">
                 <button 
@@ -464,7 +467,7 @@ const HabitCard: React.FC<{
     );
 };
 
-const WeeklyProgress: React.FC<{ completedDates: string[], onToggle: (date: string) => void }> = ({ completedDates, onToggle }) => {
+const WeeklyProgress: React.FC<{ completedDays: string[], onToggle: (date: string) => void }> = ({ completedDays, onToggle }) => {
     const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const today = LocalDate.now(ZoneId.systemDefault());
     
@@ -477,7 +480,7 @@ const WeeklyProgress: React.FC<{ completedDates: string[], onToggle: (date: stri
         <div className="flex justify-between items-center bg-brand-bg/30 p-3 rounded-xl">
             {last7Days.map((date, i) => {
                 const dateString = date.toString();
-                const isCompleted = completedDates.includes(dateString);
+                const isCompleted = completedDays.includes(dateString);
                 const isToday = today.equals(date);
                 const dayName = weekDays[date.dayOfWeek().value() % 7];
 
@@ -512,7 +515,7 @@ const WeeklyProgress: React.FC<{ completedDates: string[], onToggle: (date: stri
     );
 };
 
-const MonthlyHeatmap: React.FC<{ completedDates: string[] }> = ({ completedDates }) => {
+const MonthlyHeatmap: React.FC<{ completedDays: string[] }> = ({ completedDays }) => {
     const today = LocalDate.now(ZoneId.systemDefault());
     // Generate last 28 days for a perfect 4x7 grid
     const days = Array.from({ length: 28 }).map((_, i) => {
@@ -524,7 +527,7 @@ const MonthlyHeatmap: React.FC<{ completedDates: string[] }> = ({ completedDates
             <h5 className="text-xs font-bold text-brand-text/60 mb-3 uppercase tracking-wider">Last 4 Weeks</h5>
             <div className="grid grid-cols-7 gap-2">
                 {days.map((date, i) => {
-                    const isCompleted = completedDates.includes(date.toString());
+                    const isCompleted = completedDays.includes(date.toString());
                     const isToday = date.equals(today);
                     return (
                         <div 
@@ -553,19 +556,19 @@ const MonthlyHeatmap: React.FC<{ completedDates: string[] }> = ({ completedDates
 }
 
 const AddEditHabitModal: React.FC<{habit: Habit | null, onSave: (habit: Habit) => void, onClose: () => void}> = ({ habit, onSave, onClose }) => {
-    const [title, setTitle] = useState(habit?.title || '');
+    const [name, setName] = useState(habit?.name || '');
     const [category, setCategory] = useState<Habit['category']>(habit?.category || 'Health');
     const categories: Habit['category'][] = ['Health', 'Productivity', 'Mindfulness'];
     
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!title.trim()) return;
+        if (!name.trim()) return;
         onSave({
             id: habit?.id || '',
-            title: title.trim(),
+            name: name.trim(),
             category,
             streak: habit?.streak || 0, // Streak is recalculated
-            completedDates: habit?.completedDates || []
+            completedDays: habit?.completedDays || []
         });
     };
 
@@ -574,15 +577,15 @@ const AddEditHabitModal: React.FC<{habit: Habit | null, onSave: (habit: Habit) =
             <div className="bg-white border border-brand-text/10 rounded-2xl p-8 w-full max-w-md shadow-2xl transform transition-all scale-100">
                 <div className="flex justify-between items-center mb-6">
                     <h3 className="text-2xl font-bold text-brand-text">{habit ? 'Edit Habit' : 'Create New Habit'}</h3>
-                    <button onClick={onClose} className="p-2 rounded-full hover:bg-brand-bg text-brand-text/60 hover:text-brand-text transition-colors"><X size={20}/></button>
+                    <button onClick={onClose} title="Close modal" className="p-2 rounded-full hover:bg-brand-bg text-brand-text/60 hover:text-brand-text transition-colors"><X size={20}/></button>
                 </div>
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
                         <label className="block text-sm font-bold text-brand-text/80 mb-2">What do you want to achieve?</label>
                         <input 
                             type="text" 
-                            value={title} 
-                            onChange={e => setTitle(e.target.value)} 
+                            value={name} 
+                            onChange={e => setName(e.target.value)} 
                             placeholder="e.g., Read for 30 minutes" 
                             className="w-full bg-brand-bg/30 border border-brand-text/20 rounded-xl px-4 py-3 text-brand-text focus:outline-none focus:ring-2 focus:ring-brand-primary/50 focus:border-brand-primary transition-all text-lg placeholder:text-brand-text/30" 
                             autoFocus

@@ -1,13 +1,10 @@
 "use client";
-import { useState } from "react";
-import Link from "next/link";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import BodyClassUpdater from "../../components/BodyClassUpdater";
 import { Button, useToast } from "@/components/ui";
 import Header from "@/components/Header";
 import { getJournalEntries, saveJournalEntry } from "@/lib/api-client";
-
-import { useEffect } from "react";
 
 interface JournalEntry {
   id: number | string;
@@ -48,7 +45,6 @@ export default function JournalPage() {
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [journalText, setJournalText] = useState("");
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
-  const [hoveredMood, setHoveredMood] = useState<string | null>(null);
   const { showToast } = useToast();
 
   const moods = [
@@ -110,7 +106,7 @@ export default function JournalPage() {
         month: 'short',
         year: 'numeric'
       });
-    } catch (e) {
+    } catch {
       return dateStr;
     }
   };
@@ -134,7 +130,7 @@ export default function JournalPage() {
     try {
       // Pass tags if a tool was selected
       const tags = selectedTool ? [selectedTool.charAt(0).toUpperCase() + selectedTool.slice(1)] : [];
-      const response = await (saveJournalEntry as any)(journalText, moodToSave, tags);
+      const response = await (saveJournalEntry as (text: string, mood: string, tags: string[]) => Promise<{success: boolean}>)(journalText, moodToSave, tags);
 
       if (response && response.success) {
         setJournalText("");
@@ -703,7 +699,7 @@ export default function JournalPage() {
                     marginBottom: '20px',
                     fontStyle: 'italic',
                   }}>
-                    "{entry.text || entry.content}"
+                    &quot;{entry.text || entry.content}&quot;
                   </p>
 
                   {/* AI Insight */}

@@ -1,10 +1,18 @@
 "use client";
-import { useState } from "react";
-import Link from "next/link";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import BodyClassUpdater from "../../components/BodyClassUpdater";
 import Header from "@/components/Header";
-import { sendChatMessage, isDemoMode } from "@/lib/api-client";
+import { sendChatMessage } from "@/lib/api-client";
+
+interface TherapySession {
+  id: string | number;
+  date: string;
+  mood: string;
+  userQuote: string;
+  therapistResponse: string;
+  transcript: string;
+}
 
 export default function Therapy() {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -53,9 +61,9 @@ export default function Therapy() {
     },
   ];
 
-  const [viewingSession, setViewingSession] = useState<any | null>(null);
+  const [viewingSession, setViewingSession] = useState<TherapySession | null>(null);
 
-  const handleViewSession = (session: any) => {
+  const handleViewSession = (session: TherapySession) => {
     setViewingSession(session);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -647,7 +655,7 @@ export default function Therapy() {
                     marginBottom: '12px',
                     fontStyle: 'italic',
                   }}>
-                    "{session.userQuote}"
+                    &quot;{session.userQuote}&quot;
                   </p>
 
                   {/* Therapist Response */}

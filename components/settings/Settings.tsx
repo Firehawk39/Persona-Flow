@@ -120,7 +120,7 @@ const Settings: React.FC<SettingsProps> = ({ settings, onSave }) => {
               }}
             />
             <p style={{ fontSize: '13px', color: '#8b8b8b', marginTop: '4px' }}>
-              💡 Get this from your n8n workflow's webhook node (e.g., ngrok URL)
+              💡 Get this from your n8n workflow&apos;s webhook node (e.g., ngrok URL)
             </p>
           </div>
           

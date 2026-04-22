@@ -7,7 +7,7 @@ export const sendToN8nWebhook = async (
   url: string,
   source: string,
   message: string,
-  history: any[]
+  history: unknown[]
 ): Promise<string> => {
   try {
     const response = await fetch(url, {
@@ -32,10 +32,11 @@ export const sendToN8nWebhook = async (
     // Attempt to resolve the answer from common n8n return patterns
     return data.text || data.output || data.response || data.message || JSON.stringify(data);
 
-  } catch (error: any) {
-    console.error("n8n Webhook Error:", error);
-    let errorMessage = `Error connecting to your local brain (n8n): ${error.message}`;
-    if (error.message.includes('Failed to fetch')) {
+  } catch (error) {
+    const err = error as Error;
+    console.error("n8n Webhook Error:", err);
+    let errorMessage = `Error connecting to your local brain (n8n): ${err.message}`;
+    if (err.message.includes('Failed to fetch')) {
       errorMessage = "Error connecting to n8n: Failed to fetch. This is likely a CORS issue. Please go to your n8n Webhook node settings, find the 'Options' section, and enable 'Respond to Preflight Request (OPTIONS)'.";
     }
     return errorMessage;

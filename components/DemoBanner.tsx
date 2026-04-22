@@ -25,7 +25,7 @@ export default function DemoBanner() {
           🎯 <strong>Demo Mode</strong>
         </span>
         <span style={{ opacity: 0.95 }}>
-          You're exploring a showcase version with mock data.
+          You&apos;re exploring a showcase version with mock data.
         </span>
         <a 
           href="https://github.com/yourusername/personaflow" 

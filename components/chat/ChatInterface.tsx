@@ -139,7 +139,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ settings, habits, journal
                 <Sparkles size={16} />
             </div>
             <div>
-                <h4 className="font-semibold text-sm text-brand-text/90">Coach's Note for the Day</h4>
+                <h4 className="font-semibold text-sm text-brand-text/90">Coach&apos;s Note for the Day</h4>
                 {isNoteLoading ? (
                     <p className="text-sm text-brand-text/70 italic animate-pulse">Analyzing your progress...</p>
                 ) : (

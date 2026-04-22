@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import Link from "next/link";
 import Image from "next/image";
 import BodyClassUpdater from "../../components/BodyClassUpdater";
 import { useToast } from "@/components/ui";
@@ -46,22 +45,7 @@ const MOCK_HISTORY: Conversation[] = [
   }
 ];
 
-const MOCK_MESSAGES: Record<string, Message[]> = {
-  '1': [
-    { id: 'm1', type: 'user', text: 'I want to focus on being more present today.', timestamp: '10:00 AM' },
-    { id: 'm2', type: 'ai', text: 'That sounds like a wonderful intention. What specific moments do you want to be more present for?', timestamp: '10:01 AM' },
-    { id: 'm3', type: 'user', text: 'Mostly during my time with family.', timestamp: '10:02 AM' },
-    { id: 'm4', type: 'ai', text: 'Being fully present with family is a gift to them and yourself. Try putting your phone away during these times.', timestamp: '10:02 AM' }
-  ],
-  '2': [
-    { id: 'm1', type: 'user', text: 'Feeling a bit overwhelmed with work deadlines.', timestamp: '03:30 PM' },
-    { id: 'm2', type: 'ai', text: 'I hear you. It\'s normal to feel that way. Let\'s break it down. What is the most urgent task?', timestamp: '03:31 PM' }
-  ],
-  '3': [
-    { id: 'm1', type: 'user', text: 'Planning my goals for next month.', timestamp: '09:15 AM' },
-    { id: 'm2', type: 'ai', text: 'Great! Setting clear goals is the first step. What are your top 3 priorities?', timestamp: '09:16 AM' }
-  ]
-};
+// Removed unused MOCK_MESSAGES
 
 export default function ChatPage() {
   // Initial state is empty to show the Hero Welcome State
@@ -147,7 +131,7 @@ export default function ChatPage() {
   }, [messages]);
 
   // View full conversation
-  const handleViewConversation = async (conversation: Conversation) => {
+  const handleViewConversation = async (conversation?: Conversation) => {
     // In demo mode, show disclaimer instead of loading
     setShowDemoDisclaimer(true);
     setTimeout(() => setShowDemoDisclaimer(false), 4000); // Hide after 4 seconds
@@ -179,20 +163,7 @@ export default function ChatPage() {
     }
   };
 
-  const suggestionCards = [
-    {
-      id: 1,
-      icon: '🤖',
-      title: 'Personalized AI Coach',
-      description: 'Connecting the dots in your journey'
-    },
-    {
-      id: 2,
-      icon: '📝',
-      title: "Coach's Note for the Day",
-      description: 'Please set your daily notebook URL in Settings to get started.'
-    }
-  ];
+  // Removed unused suggestionCards
 
   const handleSendMessage = async () => {
     if (!inputText.trim()) return;
@@ -312,7 +283,7 @@ export default function ChatPage() {
               margin: '0 auto 40px auto',
               animation: 'fadeIn 0.8s ease-out 0.2s backwards',
             }}>
-              Let's navigate your thoughts together.
+              Let&apos;s navigate your thoughts together.
             </p>
 
             <div style={{

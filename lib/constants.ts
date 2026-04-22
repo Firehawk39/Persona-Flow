@@ -30,10 +30,10 @@ const getPastDates = (days: number, skipDays: number[] = []) => {
 };
 
 export const MOCK_HABITS: Habit[] = [
-  { id: '1', title: 'Morning Meditation', streak: 12, completedDates: getPastDates(12), category: 'Mindfulness' },
-  { id: '2', title: 'Drink Water', streak: 2, completedDates: getPastDates(4).slice(0, 2), category: 'Health' },
-  { id: '3', title: 'Read 20 Pages', streak: 25, completedDates: getPastDates(25), category: 'Productivity' },
-  { id: '4', title: 'No Sugar', streak: 0, completedDates: [new Date(Date.now() - 86400000 * 3).toISOString().split('T')[0]], category: 'Health' },
+  { id: '1', name: 'Morning Meditation', streak: 12, completedDays: getPastDates(12), category: 'Mindfulness' },
+  { id: '2', name: 'Drink Water', streak: 2, completedDays: getPastDates(4).slice(0, 2), category: 'Health' },
+  { id: '3', name: 'Read 20 Pages', streak: 25, completedDays: getPastDates(25), category: 'Productivity' },
+  { id: '4', name: 'No Sugar', streak: 0, completedDays: [new Date(Date.now() - 86400000 * 3).toISOString().split('T')[0]], category: 'Health' },
 ];
 
 export const MOCK_JOURNAL_ENTRIES: JournalEntry[] = [

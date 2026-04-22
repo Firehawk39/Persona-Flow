@@ -1,22 +1,14 @@
 "use client";
-import { useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
+import { useState, useEffect } from "react";
+import { Habit } from "@/lib/types";
 import BodyClassUpdater from "../../components/BodyClassUpdater";
 import { Button, useToast } from "@/components/ui";
 import Header from "@/components/Header";
 import { getHabits, saveHabit } from "@/lib/api-client";
 
-import { useEffect } from "react";
 
-interface Habit {
-  id: string;
-  name: string;
-  category: 'Mindfulness' | 'Health' | 'Productivity';
-  streak: number;
-  completedDays: string[];
-  dayInWeek: number;
-}
+
+
 
 const MOCK_HABITS: Habit[] = [
   {
@@ -24,32 +16,28 @@ const MOCK_HABITS: Habit[] = [
     name: 'Morning Meditation',
     category: 'Mindfulness',
     streak: 5,
-    completedDays: ['2026-03-19', '2026-03-20', '2026-03-21', '2026-03-22', '2026-03-23'],
-    dayInWeek: 0
+    completedDays: ['2026-03-19', '2026-03-20', '2026-03-21', '2026-03-22', '2026-03-23']
   },
   {
     id: '2',
     name: 'Drink 2L Water',
     category: 'Health',
     streak: 12,
-    completedDays: ['2026-03-16', '2026-03-17', '2026-03-18', '2026-03-19', '2026-03-20', '2026-03-21', '2026-03-22', '2026-03-23'],
-    dayInWeek: 0
+    completedDays: ['2026-03-16', '2026-03-17', '2026-03-18', '2026-03-19', '2026-03-20', '2026-03-21', '2026-03-22', '2026-03-23']
   },
   {
     id: '3',
     name: 'Read 30 Mins',
     category: 'Productivity',
     streak: 3,
-    completedDays: ['2026-03-21', '2026-03-22', '2026-03-23'],
-    dayInWeek: 0
+    completedDays: ['2026-03-21', '2026-03-22', '2026-03-23']
   },
   {
     id: '4',
     name: 'Evening Walk',
     category: 'Health',
     streak: 8,
-    completedDays: ['2026-03-18', '2026-03-19', '2026-03-20', '2026-03-21', '2026-03-22', '2026-03-23'],
-    dayInWeek: 0
+    completedDays: ['2026-03-18', '2026-03-19', '2026-03-20', '2026-03-21', '2026-03-22', '2026-03-23']
   }
 ];
 
@@ -73,13 +61,9 @@ export default function HabitsPage() {
     try {
       const data = await getHabits();
       if (data && data.length > 0) {
-        setHabits(data.map((h: any) => ({
-          id: h.id,
-          name: h.name,
-          category: h.category,
-          streak: h.streak,
-          completedDays: h.completedDays || h.completed_days || [],
-          dayInWeek: 0
+        setHabits(data.map((h: Habit) => ({
+          ...h,
+          completedDays: h.completedDays || [],
         })));
       } else {
         setHabits(MOCK_HABITS);
@@ -386,7 +370,7 @@ export default function HabitsPage() {
                   color: '#4a4a4a',
                   margin: '0 0 4px 0',
                 }}>
-                  Today's Focus
+                  Today&apos;s Focus
                 </h3>
                 <p style={{
                   fontSize: '13px',

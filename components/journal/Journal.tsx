@@ -71,7 +71,7 @@ const Journal: React.FC<JournalProps> = ({ settings, entries, onUpdateEntries })
     const newEntry: JournalEntry = {
       id: Date.now().toString(),
       date: new Date().toISOString(),
-      mood: selectedMood as any,
+      mood: selectedMood as JournalEntry['mood'],
       content: newEntryContent,
       tags: [],
       aiInsight: insight,
@@ -134,7 +134,7 @@ const Journal: React.FC<JournalProps> = ({ settings, entries, onUpdateEntries })
             {/* Editor */}
             <div className="bg-white/60 backdrop-blur-sm p-6 rounded-2xl border border-brand-text/10 flex-1 flex flex-col shadow-lg">
               <div className="flex items-center space-x-4 mb-4">
-                <span className="text-brand-text/90 text-sm font-medium">Today's mood:</span>
+                <span className="text-brand-text/90 text-sm font-medium">Today&apos;s mood:</span>
                 <div className="flex items-start space-x-1 sm:space-x-2">
                   {moods.map((m) => (
                     <button

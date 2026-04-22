@@ -24,28 +24,39 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [settings, setSettings] = useState<UserSettings>(INITIAL_SETTINGS);
-  const [habits, setHabits] = useState<Habit[]>(MOCK_HABITS);
-  const [journalEntries, setJournalEntries] = useState<JournalEntry[]>(MOCK_JOURNAL_ENTRIES);
-  const [sessionHistory, setSessionHistory] = useState<TherapySession[]>(MOCK_SESSION_HISTORY);
+  const [settings, setSettings] = useState<UserSettings>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('personaflow_settings');
+      return saved ? JSON.parse(saved) : INITIAL_SETTINGS;
+    }
+    return INITIAL_SETTINGS;
+  });
 
+  const [habits, setHabits] = useState<Habit[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('personaflow_habits');
+      return saved ? JSON.parse(saved) : MOCK_HABITS;
+    }
+    return MOCK_HABITS;
+  });
 
-  // Load from localStorage on mount
-  useEffect(() => {
-    const savedSettings = localStorage.getItem('personaflow_settings');
-    const savedHabits = localStorage.getItem('personaflow_habits');
-    const savedJournal = localStorage.getItem('personaflow_journal');
-    const savedSessions = localStorage.getItem('personaflow_sessions');
+  const [journalEntries, setJournalEntries] = useState<JournalEntry[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('personaflow_journal');
+      return saved ? JSON.parse(saved) : MOCK_JOURNAL_ENTRIES;
+    }
+    return MOCK_JOURNAL_ENTRIES;
+  });
 
+  const [sessionHistory, setSessionHistory] = useState<TherapySession[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('personaflow_sessions');
+      return saved ? JSON.parse(saved) : MOCK_SESSION_HISTORY;
+    }
+    return MOCK_SESSION_HISTORY;
+  });
 
-    if (savedSettings) setSettings(JSON.parse(savedSettings));
-    if (savedHabits) setHabits(JSON.parse(savedHabits));
-    if (savedJournal) setJournalEntries(JSON.parse(savedJournal));
-    if (savedSessions) setSessionHistory(JSON.parse(savedSessions));
-
-  }, []);
-
-  // Save to localStorage on changes
+  // Save to localStorage on changes (useEffect is appropriate here)
   useEffect(() => {
     localStorage.setItem('personaflow_settings', JSON.stringify(settings));
   }, [settings]);

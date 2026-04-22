@@ -195,7 +195,7 @@ const Therapy: React.FC<TherapyProps> = ({ settings, sessionHistory, onUpdateHis
             </div>
             <h2 className="text-4xl font-bold text-brand-text mb-4 tracking-tight">How can I help you today?</h2>
             <p className="text-lg text-brand-text/60 leading-relaxed">
-                Choose an intention to guide our session. I'm here to listen, support, and help you find your way.
+                Choose an intention to guide our session. I&apos;m here to listen, support, and help you find your way.
             </p>
         </div>
 
@@ -370,7 +370,7 @@ const Therapy: React.FC<TherapyProps> = ({ settings, sessionHistory, onUpdateHis
                         <CheckCircle2 size={32} />
                     </div>
                     <h3 className="text-3xl font-bold text-brand-text">Session Complete</h3>
-                    <p className="text-brand-text/60">Take a moment to reflect on how you're feeling now.</p>
+                    <p className="text-brand-text/60">Take a moment to reflect on how you&apos;re feeling now.</p>
                 </div>
 
                 <div className="bg-white p-8 rounded-3xl shadow-xl shadow-brand-primary/10 border border-brand-text/10">
