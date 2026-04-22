@@ -120,9 +120,44 @@ async function n8nFetch(payload: Record<string, unknown>) {
 
 // --- ACTUAL FUNCTIONS ---
 
+function sanitizeAiResponse(text: string): string {
+  if (!text) return "";
+  // Strip standard <think> tags used by reasoning models
+  let cleaned = text.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+  
+  // Strip "Thinking Process:" blocks if they leak directly
+  // This looks for "Thinking Process:" up until it finds a clear end, or we just try to strip it if there's a double newline
+  if (cleaned.startsWith('Thinking Process:')) {
+    const parts = cleaned.split('\n\n');
+    if (parts.length > 1) {
+      cleaned = parts.slice(1).join('\n\n').trim();
+    } else {
+      // Fallback for models that don't use newlines (like the current gemma4:e4b behavior)
+      // We look for the final output which usually starts with a capital letter right after a period
+      const lastDotMatch = cleaned.match(/\.\s*([A-Z][a-z]+.+)$/);
+      if (lastDotMatch && lastDotMatch[1]) {
+        cleaned = lastDotMatch[1];
+      }
+    }
+  }
+  
+  return cleaned;
+}
+
 export async function sendChatMessage(message: string, history: unknown[], contextExtra: Record<string, unknown> = {}) {
   const payload = { ...getBasePayload('chat', 'message'), message, history, ...contextExtra };
   const data = await n8nFetch(payload);
+  
+  if (data && typeof data.text === 'string') {
+    data.text = sanitizeAiResponse(data.text);
+  }
+  if (data && typeof data.response === 'string') {
+    data.response = sanitizeAiResponse(data.response);
+  }
+  if (data && typeof data.output === 'string') {
+    data.output = sanitizeAiResponse(data.output);
+  }
+  
   return data || { text: "Connection error. Using offline fallback." };
 }
 
