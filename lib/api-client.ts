@@ -122,21 +122,28 @@ async function n8nFetch(payload: Record<string, unknown>) {
 
 function sanitizeAiResponse(text: string): string {
   if (!text) return "";
-  // Strip standard <think> tags used by reasoning models
   let cleaned = text.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
   
-  // Strip "Thinking Process:" blocks if they leak directly
-  // This looks for "Thinking Process:" up until it finds a clear end, or we just try to strip it if there's a double newline
-  if (cleaned.startsWith('Thinking Process:')) {
-    const parts = cleaned.split('\n\n');
+  if (cleaned.includes('Thinking Process:')) {
+    // Aggressive cleanup for instruction-tuned models that leak "Thinking Process:"
+    // This removes everything from "Thinking Process:" up to the last capitalized sentence
+    const parts = cleaned.split(/Thinking Process:/);
     if (parts.length > 1) {
-      cleaned = parts.slice(1).join('\n\n').trim();
-    } else {
-      // Fallback for models that don't use newlines (like the current gemma4:e4b behavior)
-      // We look for the final output which usually starts with a capital letter right after a period
-      const lastDotMatch = cleaned.match(/\.\s*([A-Z][a-z]+.+)$/);
-      if (lastDotMatch && lastDotMatch[1]) {
-        cleaned = lastDotMatch[1];
+      const thoughtProcess = parts[1];
+      // Try to find the start of the actual output, which usually follows the last markdown bold tag like "**Final Polish:**"
+      const lastStar = thoughtProcess.lastIndexOf('**');
+      if (lastStar !== -1) {
+        const afterStar = thoughtProcess.substring(lastStar + 2);
+        const firstDot = afterStar.indexOf('.');
+        if (firstDot !== -1 && firstDot < afterStar.length - 5) {
+           cleaned = afterStar.substring(firstDot + 1).trim();
+        } else {
+           cleaned = afterStar.trim();
+        }
+      } else {
+        // Fallback: just split by newlines and take the last part
+        const lines = thoughtProcess.split('\n');
+        cleaned = lines[lines.length - 1].trim();
       }
     }
   }
