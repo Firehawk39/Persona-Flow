@@ -41,9 +41,16 @@ export async function POST(request: Request) {
     return NextResponse.json(data);
 
   } catch (error: any) {
-    console.error('[API-PROXY] Error:', error.message);
+    console.error('[API-PROXY] Fetch Failure:', error.message);
+    
+    // If we're here, the server literally couldn't reach the domain (DNS/Tunnel down)
     return NextResponse.json(
-      { error: 'Failed to reach n8n', details: error.message },
+      { 
+        error: 'N8N_UNREACHABLE', 
+        message: 'The Vercel server could not reach your n8n tunnel.',
+        details: error.message,
+        url_attempted: targetUrl
+      },
       { status: 502 }
     );
   }
