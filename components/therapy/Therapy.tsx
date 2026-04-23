@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Bot, User, Send, BrainCircuit, AlertCircle, Zap, Sparkles, BookOpen, Angry, Frown, Meh, Smile, Laugh, History, ArrowLeft, CheckCircle2, MoreHorizontal } from 'lucide-react';
 import { Message, UserSettings, TherapySession } from '@/lib/types';
 import { sendToN8nWebhook } from '@/lib/services/webhookService';
+import { warmModel } from '@/lib/api-client';
 
 interface TherapyProps {
   settings: UserSettings;
@@ -46,6 +47,11 @@ const Therapy: React.FC<TherapyProps> = ({ settings, sessionHistory, onUpdateHis
       chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
     }
   };
+
+  // Pre-warm Ollama model on mount
+  useEffect(() => {
+    warmModel('therapy');
+  }, []);
 
   useEffect(() => {
     if (sessionState === 'active' || viewingSession) {

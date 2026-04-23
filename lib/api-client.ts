@@ -174,3 +174,30 @@ export async function getChatHistory() {
   const data = await n8nFetch(getBasePayload('chat', 'fetch_history'));
   return data?.history || getMockChatHistory();
 }
+
+/**
+ * Pre-warm the Ollama model into VRAM before the user sends their first message.
+ * This is fire-and-forget — it never blocks the UI or throws errors.
+ * Call this on component mount for both Chat and Therapy pages.
+ */
+export function warmModel(modelType: 'chat' | 'therapy' = 'chat'): void {
+  const url = getWebhookUrl();
+  if (!url) return;
+
+  const payload = {
+    ...getBasePayload('warmup', 'preload'),
+    model_type: modelType,
+    message: '', // empty — just load the model, don't generate
+  };
+
+  // Fire and forget — we intentionally do NOT await this
+  fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  }).catch(() => {
+    // Silently swallow errors — warmup is best-effort only
+  });
+
+  console.log(`[WARMUP] Sent model pre-load ping for: ${modelType}`);
+}

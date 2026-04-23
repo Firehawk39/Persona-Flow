@@ -4,7 +4,7 @@ import Image from "next/image";
 import BodyClassUpdater from "../../components/BodyClassUpdater";
 import { useToast } from "@/components/ui";
 import Header from "@/components/Header";
-import { sendChatMessage, getChatHistory } from "@/lib/api-client";
+import { sendChatMessage, getChatHistory, warmModel } from "@/lib/api-client";
 
 interface Message {
   id: string;
@@ -64,6 +64,7 @@ export default function ChatPage() {
 
   useEffect(() => {
     fetchHistory();
+    warmModel('chat'); // Pre-load Ollama model into VRAM
   }, []);
 
   const fetchHistory = async () => {
