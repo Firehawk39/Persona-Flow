@@ -154,7 +154,9 @@ const Therapy: React.FC<TherapyProps> = ({ settings, sessionHistory, onUpdateHis
     ]);
     
     try {
-        const responseText = await sendToN8nWebhook(settings.n8nWebhookUrl, 'therapy', userMsg.content, history);
+        const responseText = await sendToN8nWebhook(settings.n8nWebhookUrl, 'therapy', userMsg.content, history, {
+          session_focus: sessionIntention || 'General support',
+        });
         setMessages((prev) =>
           prev.map((m) =>
             m.id === aiMsgId ? { ...m, content: responseText } : m

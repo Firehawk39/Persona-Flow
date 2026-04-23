@@ -7,7 +7,8 @@ export const sendToN8nWebhook = async (
   url: string,
   source: string,
   message: string,
-  history: unknown[]
+  history: unknown[],
+  extraFields?: Record<string, unknown>
 ): Promise<string> => {
   try {
     const response = await fetch(url, {
@@ -20,6 +21,7 @@ export const sendToN8nWebhook = async (
         message,
         history, // Passing history context if the webhook supports it
         timestamp: new Date().toISOString(),
+        ...extraFields, // e.g. session_focus for therapy
       }),
     });
 
