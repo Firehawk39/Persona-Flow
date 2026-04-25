@@ -1,61 +1,82 @@
-# PersonaFlow
+<div align="center">
+  
+# 🌊 PersonaFlow
+**An Intelligent Hybrid-AI Mental Wellness Platform**
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-persona--flow--three.vercel.app-success?style=for-the-badge&logo=vercel)](https://persona-flow-three.vercel.app/)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![n8n](https://img.shields.io/badge/n8n-Workflow_Automation-FF6B6B?style=for-the-badge&logo=n8n)](https://n8n.io/)
+[![Ollama](https://img.shields.io/badge/Ollama-Local_LLM-black?style=for-the-badge&logo=ollama)](https://ollama.ai/)
+[![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-black?style=for-the-badge&logo=vercel)](https://persona-flow-three.vercel.app/)
 
-AI-powered mental wellness platform built with Next.js 14, TypeScript, and n8n workflows.
+PersonaFlow is a modern, privacy-first mental wellness companion that utilizes orchestrated AI agents to facilitate therapeutic conversations, intelligent journaling, and habit tracking.
 
-## Features
+</div>
 
-- 🧠 AI Therapy Sessions - Personalized mental health support
-- 📝 Smart Journaling - Mood tracking with AI insights
-- 🎯 Habit Tracking - Build positive habits with analytics
-- 💬 AI Coach - 24/7 intelligent guidance
+---
 
-## Tech Stack
+## 🌟 Overview
 
-- **Frontend:** Next.js 14, TypeScript, React, Tailwind CSS
-- **AI:** n8n workflows, OpenAI API
-- **Data:** localStorage, Supabase (optional)
+PersonaFlow breaks away from standard "chatbot" architectures by implementing a **Hybrid AI Orchestration Engine** through [n8n](https://n8n.io/). Instead of monolithic LLM calls, the platform routes user intents to specialized agents—providing a more empathetic, context-aware, and secure user experience.
 
-## Getting Started
+Whether users need a safe space to vent, actionable solutions to a problem, or a reflective journaling partner, PersonaFlow adapts dynamically.
 
-```bash
-# Install dependencies
-npm install
+## 🚀 Key Features
 
-# Run development server
-npm run dev
-```
+* **🧠 Agentic Therapy Sessions:** Context-aware conversations routed through specific personas (Gain Clarity, Vent, Solution-oriented) powered by LangChain and Ollama.
+* **📝 Reflective AI Journaling:** Capture daily thoughts with an AI that doesn't just listen, but helps you identify behavioral patterns and emotional trends.
+* **🎯 Habit Formation & Tracking:** Build and sustain positive routines with analytical dashboards and tailored AI encouragement.
+* **⚡ Blazing Fast Architecture:** Built on Next.js 14 App Router for optimal rendering performance, with background AI warming for zero-latency conversations.
 
-Open [http://localhost:3000](http://localhost:3000)
+## 🏗️ Architecture
 
-## Environment Setup
+PersonaFlow is built with a modern, decoupled stack prioritizing both developer experience and end-user privacy:
 
-Copy `.env.example` to `.env.local` and configure:
+* **Frontend:** Next.js 14 (App Router), React, TypeScript, Tailwind CSS
+* **Orchestration:** n8n (Node-based AI Workflow Automation)
+* **AI Models:** Local & Cloud Hybrid via LangChain (Ollama integration for low-latency, privacy-preserving inference)
+* **State & Persistence:** Supabase / LocalStorage (configurable for strict privacy requirements)
 
-```env
-NEXT_PUBLIC_N8N_WEBHOOK_URL=your_webhook_url
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_key
-```
+> **Deep Dive:** For a comprehensive look at the system architecture and the Multi-Agent topology, please review our [Architecture Design Document](./docs/DESIGN.md) and [Agent Specifications](./docs/Agents.md).
 
-## Project Structure
+## 🛠️ Getting Started
 
-```
-app/          # Next.js pages
-components/   # React components
-lib/          # Utilities and API client
-public/       # Static assets
-```
+### Prerequisites
+- Node.js 18+
+- [n8n](https://n8n.io/) (Local instance or Cloud)
+- [Ollama](https://ollama.ai/) (For local inference)
 
-## Deployment
+### Local Setup
 
-Deploy to Vercel:
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Firehawk39/Persona-Flow.git
+   cd Persona-Flow
+   ```
 
-```bash
-vercel --prod
-```
+2. **Configure Environment:**
+   ```bash
+   cp .env.example .env.local
+   ```
+   Add your n8n webhook URLs and (optional) Supabase keys.
 
-## License
+3. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-MIT
+4. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+   The application will be available at [http://localhost:3000](http://localhost:3000).
+
+*For full deployment guidelines, please refer to the [Setup Guide](./docs/SETUP.md).*
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/Firehawk39/Persona-Flow/issues).
+
+## 📄 License
+
+This project is licensed under the MIT License.

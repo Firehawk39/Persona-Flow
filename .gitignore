@@ -41,11 +41,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Excessive documentation (keep repo clean)
-START_HERE.md
-REORGANIZATION_SUMMARY.md
-GETTING_STARTED.md
-docs/
+# Keep repo clean
 reorganize.bat
 cleanup-backups.bat
 .github-cleanup.bat
@@ -53,9 +49,4 @@ cleanup-backups.bat
 # Temp files
 temp_*
 *.backup
-env.template
-
-# Keep only essential docs
-!README.md
-!SETUP.md
 
