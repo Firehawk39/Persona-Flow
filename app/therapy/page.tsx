@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import BodyClassUpdater from "../../components/BodyClassUpdater";
 import Header from "@/components/Header";
-import { sendChatMessage } from "@/lib/api-client";
+import { sendChatMessage, warmModel } from "@/lib/api-client";
 
 interface TherapySession {
   id: string | number;
@@ -21,24 +21,28 @@ export default function Therapy() {
   const [chatHistory, setChatHistory] = useState<Array<{ role: 'user' | 'assistant', content: string }>>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    warmModel('therapy');
+  }, []);
+
   const options = [
     {
       id: "clarity",
       title: "Gain Clarity",
       description: "Understand a situation better.",
-      starterPrompt: "Tell me what's feeling fuzzy or confusing right now. Let's map it out together."
+      starterPrompt: "Tell me what's feeling fuzzy or confusing right now. Let's map it out together. ✨"
     },
     {
       id: "vent",
       title: "Vent Feelings",
       description: "Express what's on your mind.",
-      starterPrompt: "The floor is yours. No filters, no judgment. What's weighing you down today?"
+      starterPrompt: "The floor is yours. No filters, no judgment. What's weighing you down today? 🤗"
     },
     {
       id: "solution",
       title: "Find a Solution",
       description: "Work towards an actionable step.",
-      starterPrompt: "You're ready for a change. What's the specific wall you're hitting right now?"
+      starterPrompt: "You're ready for a change. What's the specific wall you're hitting right now? 🎯"
     },
   ];
 

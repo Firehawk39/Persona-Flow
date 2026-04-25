@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import BodyClassUpdater from "../components/BodyClassUpdater";
 import Header from "@/components/Header";
+import { warmModel } from "@/lib/api-client";
 
 export default function Home() {
   return (
@@ -331,6 +332,7 @@ export default function Home() {
                                 <Link
                                   href="/therapy"
                                   className="journey-card therapy-card"
+                                  onClick={() => warmModel('therapy')}
                                 >
                                   <h3 className="journey-card-title">
                                     Therapy
@@ -344,6 +346,7 @@ export default function Home() {
                                 <Link
                                   href="/journal"
                                   className="journey-card journal-card"
+                                  onClick={() => warmModel('chat')}
                                 >
                                   <h3 className="journey-card-title">
                                     Journal
@@ -466,7 +469,7 @@ export default function Home() {
           <div className="ast-footer-copyright">
             <p style={{ margin: 0, textAlign: 'center' }}>
               <span style={{ color: "#000000", fontWeight: '500', fontSize: '14px' }}>
-                Made with ❤️ by Harsh Solanki
+                Made by Harsh Solanki
               </span>
             </p>
           </div>

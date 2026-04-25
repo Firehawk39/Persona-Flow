@@ -195,6 +195,7 @@ export function warmModel(modelType: 'chat' | 'therapy' = 'chat'): void {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
+    keepalive: true,
   }).catch(() => {
     // Silently swallow errors — warmup is best-effort only
   });

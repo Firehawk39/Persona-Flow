@@ -3,6 +3,8 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+import { warmModel } from "@/lib/api-client";
+
 const Header = () => {
   const pathname = usePathname();
 
@@ -87,6 +89,7 @@ const Header = () => {
                                 <Link
                                   href="/therapy"
                                   className="menu-link"
+                                  onClick={() => warmModel('therapy')}
                                   aria-current={pathname === '/therapy' ? 'page' : undefined}
                                   target="_self"
                                 >
@@ -104,7 +107,12 @@ const Header = () => {
                                 </Link>
                               </li>
                               <li className={`menu-item menu-item-type-post_type menu-item-object-page menu-item-chat ${isActive('/chat')}`}>
-                                <Link href="/chat" className="menu-link" aria-current={pathname === '/chat' ? 'page' : undefined} target="_self">
+                                <Link href="/chat" 
+                                  className="menu-link" 
+                                  onClick={() => warmModel('chat')}
+                                  aria-current={pathname === '/chat' ? 'page' : undefined} 
+                                  target="_self"
+                                >
                                   Flow AI
                                 </Link>
                               </li>
