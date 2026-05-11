@@ -4,7 +4,7 @@ import Image from "next/image";
 import BodyClassUpdater from "../../components/BodyClassUpdater";
 import { Button, useToast } from "@/components/ui";
 import Header from "@/components/Header";
-import { getJournalEntries, saveJournalEntry } from "@/lib/api-client";
+import { getJournalEntries, saveJournalEntry, warmModel } from "@/lib/api-client";
 
 interface JournalEntry {
   id: number | string;
@@ -78,6 +78,7 @@ export default function JournalPage() {
 
   useEffect(() => {
     fetchEntries();
+    warmModel('chat'); // Pre-load AI for journal insights
   }, []);
 
   const fetchEntries = async () => {

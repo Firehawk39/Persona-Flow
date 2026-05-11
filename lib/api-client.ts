@@ -184,21 +184,21 @@ export function warmModel(modelType: 'chat' | 'therapy' = 'chat'): void {
   const url = getWebhookUrl();
   if (!url) return;
 
-  const payload = {
-    ...getBasePayload('warmup', 'preload'),
-    model_type: modelType,
-    message: '', // empty — just load the model, don't generate
-  };
-
   // Fire and forget — we intentionally do NOT await this
+  // Use keepalive: true to ensure the request finishes even if navigation occurs
   fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
+    body: JSON.stringify({ 
+      action: 'warmup', 
+      source: modelType,
+      message: 'warmup', // Including a message triggers the AI node in n8n/Ollama
+      history: [],
+      timestamp: new Date().toISOString()
+    }),
     keepalive: true,
-  }).catch(() => {
-    // Silently swallow errors — warmup is best-effort only
+  }).catch(err => {
+    // Silently fail as this is just a pre-warm optimization
+    console.warn('[WARMUP] Failed to send warmup ping:', err);
   });
-
-  console.log(`[WARMUP] Sent model pre-load ping for: ${modelType}`);
 }

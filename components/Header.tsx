@@ -89,29 +89,26 @@ const Header = () => {
                                 <Link
                                   href="/therapy"
                                   className="menu-link"
-                                  onClick={() => warmModel('therapy')}
                                   aria-current={pathname === '/therapy' ? 'page' : undefined}
-                                  target="_self"
                                 >
                                   Therapy
                                 </Link>
                               </li>
                               <li className={`menu-item menu-item-type-post_type menu-item-object-page menu-item-journal ${isActive('/journal')}`}>
-                                <Link href="/journal" className="menu-link" aria-current={pathname === '/journal' ? 'page' : undefined} target="_self">
+                                <Link href="/journal" className="menu-link" aria-current={pathname === '/journal' ? 'page' : undefined}>
                                   Journal
                                 </Link>
                               </li>
                               <li className={`menu-item menu-item-type-post_type menu-item-object-page menu-item-1880 ${isActive('/habits')}`}>
-                                <Link href="/habits" className="menu-link" aria-current={pathname === '/habits' ? 'page' : undefined} target="_self">
+                                <Link href="/habits" className="menu-link" aria-current={pathname === '/habits' ? 'page' : undefined}>
                                   Habits
                                 </Link>
                               </li>
                               <li className={`menu-item menu-item-type-post_type menu-item-object-page menu-item-chat ${isActive('/chat')}`}>
-                                <Link href="/chat" 
-                                  className="menu-link" 
-                                  onClick={() => warmModel('chat')}
-                                  aria-current={pathname === '/chat' ? 'page' : undefined} 
-                                  target="_self"
+                                <Link
+                                  href="/chat"
+                                  className="menu-link"
+                                  aria-current={pathname === '/chat' ? 'page' : undefined}
                                 >
                                   Flow AI
                                 </Link>

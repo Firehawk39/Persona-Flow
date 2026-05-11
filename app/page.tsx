@@ -332,7 +332,6 @@ export default function Home() {
                                 <Link
                                   href="/therapy"
                                   className="journey-card therapy-card"
-                                  onClick={() => warmModel('therapy')}
                                 >
                                   <h3 className="journey-card-title">
                                     Therapy
@@ -346,7 +345,6 @@ export default function Home() {
                                 <Link
                                   href="/journal"
                                   className="journey-card journal-card"
-                                  onClick={() => warmModel('chat')}
                                 >
                                   <h3 className="journey-card-title">
                                     Journal
